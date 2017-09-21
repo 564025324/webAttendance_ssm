@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="profiler.settings.instrument.empty.methods">true</entry>
+<entry key="ProfilerCPUSettings_profile_runnables">true</entry>
+<entry key="ProfilerCPUSettings_filter_type">2</entry>
+<entry key="ProfilerMemorySettings_track_every">10</entry>
+<entry key="ProfilerMemorySettings_mode">4</entry>
+<entry key="ProfilerCPUSettings_root_classes">com.chenbingxian.controller.kaoqindenji.**
+com.chenbingxian.controller.kaoqinguanli.**
+com.chenbingxian.controller.paibanguangli.**
+com.chenbingxian.controller.renshiguanli.**
+com.chenbingxian.core.base.**
+com.chenbingxian.core.query.**
+com.chenbingxian.dao.**
+com.chenbingxian.po.**
+com.chenbingxian.service.kaoqindenji.buqiandenji.**
+com.chenbingxian.service.kaoqindenji.jiabangongxiudengji.**
+com.chenbingxian.service.kaoqinguangli.jiejiarishezhi.**
+com.chenbingxian.service.kaoqinguangli.kaoqingleibieshezhi.**
+com.chenbingxian.service.paibanguangli.bancishezhi.**
+com.chenbingxian.service.paibanguangli.gudingbancishezhi.**
+com.chenbingxian.service.paibanguangli.paiban.**
+com.chenbingxian.service.renshiguanli.setdepartment.**
+com.chenbingxian.service.renshiguanli.staff.**
+com.chenbingxian.vo.**
+</entry>
+<entry key="ProfilerCPUSettings_filter_value">com.chenbingxian.controller.kaoqindenji.*,
+com.chenbingxian.controller.kaoqinguanli.*,
+com.chenbingxian.controller.paibanguangli.*,
+com.chenbingxian.controller.renshiguanli.*,
+com.chenbingxian.core.base.*,
+com.chenbingxian.core.query.*,
+com.chenbingxian.dao.*,
+com.chenbingxian.po.*,
+com.chenbingxian.service.kaoqindenji.buqiandenji.*,
+com.chenbingxian.service.kaoqindenji.jiabangongxiudengji.*,
+com.chenbingxian.service.kaoqinguangli.jiejiarishezhi.*,
+com.chenbingxian.service.kaoqinguangli.kaoqingleibieshezhi.*,
+com.chenbingxian.service.paibanguangli.bancishezhi.*,
+com.chenbingxian.service.paibanguangli.gudingbancishezhi.*,
+com.chenbingxian.service.paibanguangli.paiban.*,
+com.chenbingxian.service.renshiguanli.setdepartment.*,
+com.chenbingxian.service.renshiguanli.staff.*,
+com.chenbingxian.vo.*</entry>
+<entry key="profiler.settings.istrument.getter.setter.methods">true</entry>
+<entry key="myeclipse.profiling.mode">0</entry>
+<entry key="ProfilerMemorySettings_stacktraces">-1</entry>
+</properties>

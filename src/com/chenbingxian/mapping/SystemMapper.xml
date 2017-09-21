@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chenbingxian.dao.SystemMapper">
+	<resultMap id="BaseResultMap" type="com.chenbingxian.po.System">
+		<constructor>
+			<idArg column="systemId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<arg column="systemNumber" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="systemName" jdbcType="VARCHAR" javaType="java.lang.String" />
+		</constructor>
+	</resultMap>
+	<sql id="Base_Column_List">
+		systemId, systemNumber, systemName
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from system
+		where systemId = #{systemid,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		update  system set deleteNo=1
+		where systemId = #{systemid,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.chenbingxian.po.System">
+		<selectKey resultType="java.lang.Integer" keyProperty="systemid"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into system (systemNumber, systemName,deleteNo)
+		values (#{systemnumber,jdbcType=VARCHAR}, #{systemname,jdbcType=VARCHAR},0)
+	</insert>
+	<insert id="insertSelective" parameterType="com.chenbingxian.po.System">
+		<selectKey resultType="java.lang.Integer" keyProperty="systemid"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into system
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="systemnumber != null">
+				systemNumber,
+			</if>
+			<if test="systemname != null">
+				systemName,
+			</if>
+				deleteNO,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="systemnumber != null">
+				#{systemnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="systemname != null">
+				#{systemname,jdbcType=VARCHAR},
+			</if>
+			0,
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.chenbingxian.po.System">
+		update system
+		<set>
+			<if test="systemnumber != null">
+				systemNumber = #{systemnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="systemname != null">
+				systemName = #{systemname,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where systemId = #{systemid,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.chenbingxian.po.System">
+		update system
+		set systemNumber = #{systemnumber,jdbcType=VARCHAR},
+		systemName = #{systemname,jdbcType=VARCHAR}
+		where systemId = #{systemid,jdbcType=INTEGER}
+	</update>
+	<!-- 查询所有考勤制度 -->
+	<select id="selectSystems" resultType="com.chenbingxian.po.System">
+		select *
+		from system
+		where deleteNo=0;
+	</select>
+	<!-- 查询正在使用此制度的人数 -->
+	<select id="panDuanZhiDuShiFouShiYongZhong" resultType="com.chenbingxian.vo.Number">
+	SELECT COUNT(*) as number  FROM staff WHERE systemId=#{systemid,jdbcType=INTEGER} AND positionTypeId NOT IN(2)
+	</select>
+
+</mapper>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chenbingxian.dao.StaffclassperiodsigninrecordMapper" >
+  <resultMap id="BaseResultMap" type="com.chenbingxian.po.Staffclassperiodsigninrecord" >
+    <constructor >
+      <idArg column="staffClassPeriodSignInRecordId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="signInTime" jdbcType="TIME" javaType="java.util.Date" />
+      <arg column="lateNo" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="signInWayId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="SignInNumber" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="signBackTime" jdbcType="TIME" javaType="java.util.Date" />
+      <arg column="leaveEarlyNo" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="SignBackWayId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="signBackNumber" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="attendanceClassChildId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="classPeriodId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="staffClassesRecordId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    staffClassPeriodSignInRecordId, signInTime, lateNo, signInWayId, SignInNumber, signBackTime, 
+    leaveEarlyNo, SignBackWayId, signBackNumber, attendanceClassChildId, classPeriodId, 
+    staffClassesRecordId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from staffclassperiodsigninrecord
+    where staffClassPeriodSignInRecordId = #{staffclassperiodsigninrecordid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from staffclassperiodsigninrecord
+    where staffClassPeriodSignInRecordId = #{staffclassperiodsigninrecordid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.chenbingxian.po.Staffclassperiodsigninrecord" >
+    <selectKey resultType="java.lang.Integer" keyProperty="staffclassperiodsigninrecordid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into staffclassperiodsigninrecord (signInTime, lateNo, signInWayId, 
+      SignInNumber, signBackTime, leaveEarlyNo, 
+      SignBackWayId, signBackNumber, attendanceClassChildId, 
+      classPeriodId, staffClassesRecordId)
+    values (#{signintime,jdbcType=TIME}, #{lateno,jdbcType=BIT}, #{signinwayid,jdbcType=INTEGER}, 
+      #{signinnumber,jdbcType=VARCHAR}, #{signbacktime,jdbcType=TIME}, #{leaveearlyno,jdbcType=BIT}, 
+      #{signbackwayid,jdbcType=INTEGER}, #{signbacknumber,jdbcType=VARCHAR}, #{attendanceclasschildid,jdbcType=INTEGER}, 
+      #{classperiodid,jdbcType=INTEGER}, #{staffclassesrecordid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.chenbingxian.po.Staffclassperiodsigninrecord" >
+    <selectKey resultType="java.lang.Integer" keyProperty="staffclassperiodsigninrecordid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into staffclassperiodsigninrecord
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="signintime != null" >
+        signInTime,
+      </if>
+      <if test="lateno != null" >
+        lateNo,
+      </if>
+      <if test="signinwayid != null" >
+        signInWayId,
+      </if>
+      <if test="signinnumber != null" >
+        SignInNumber,
+      </if>
+      <if test="signbacktime != null" >
+        signBackTime,
+      </if>
+      <if test="leaveearlyno != null" >
+        leaveEarlyNo,
+      </if>
+      <if test="signbackwayid != null" >
+        SignBackWayId,
+      </if>
+      <if test="signbacknumber != null" >
+        signBackNumber,
+      </if>
+      <if test="attendanceclasschildid != null" >
+        attendanceClassChildId,
+      </if>
+      <if test="classperiodid != null" >
+        classPeriodId,
+      </if>
+      <if test="staffclassesrecordid != null" >
+        staffClassesRecordId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="signintime != null" >
+        #{signintime,jdbcType=TIME},
+      </if>
+      <if test="lateno != null" >
+        #{lateno,jdbcType=BIT},
+      </if>
+      <if test="signinwayid != null" >
+        #{signinwayid,jdbcType=INTEGER},
+      </if>
+      <if test="signinnumber != null" >
+        #{signinnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="signbacktime != null" >
+        #{signbacktime,jdbcType=TIME},
+      </if>
+      <if test="leaveearlyno != null" >
+        #{leaveearlyno,jdbcType=BIT},
+      </if>
+      <if test="signbackwayid != null" >
+        #{signbackwayid,jdbcType=INTEGER},
+      </if>
+      <if test="signbacknumber != null" >
+        #{signbacknumber,jdbcType=VARCHAR},
+      </if>
+      <if test="attendanceclasschildid != null" >
+        #{attendanceclasschildid,jdbcType=INTEGER},
+      </if>
+      <if test="classperiodid != null" >
+        #{classperiodid,jdbcType=INTEGER},
+      </if>
+      <if test="staffclassesrecordid != null" >
+        #{staffclassesrecordid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.chenbingxian.po.Staffclassperiodsigninrecord" >
+    update staffclassperiodsigninrecord
+    <set >
+      <if test="signintime != null" >
+        signInTime = #{signintime,jdbcType=TIME},
+      </if>
+      <if test="lateno != null" >
+        lateNo = #{lateno,jdbcType=BIT},
+      </if>
+      <if test="signinwayid != null" >
+        signInWayId = #{signinwayid,jdbcType=INTEGER},
+      </if>
+      <if test="signinnumber != null" >
+        SignInNumber = #{signinnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="signbacktime != null" >
+        signBackTime = #{signbacktime,jdbcType=TIME},
+      </if>
+      <if test="leaveearlyno != null" >
+        leaveEarlyNo = #{leaveearlyno,jdbcType=BIT},
+      </if>
+      <if test="signbackwayid != null" >
+        SignBackWayId = #{signbackwayid,jdbcType=INTEGER},
+      </if>
+      <if test="signbacknumber != null" >
+        signBackNumber = #{signbacknumber,jdbcType=VARCHAR},
+      </if>
+      <if test="attendanceclasschildid != null" >
+        attendanceClassChildId = #{attendanceclasschildid,jdbcType=INTEGER},
+      </if>
+      <if test="classperiodid != null" >
+        classPeriodId = #{classperiodid,jdbcType=INTEGER},
+      </if>
+      <if test="staffclassesrecordid != null" >
+        staffClassesRecordId = #{staffclassesrecordid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where staffClassPeriodSignInRecordId = #{staffclassperiodsigninrecordid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.chenbingxian.po.Staffclassperiodsigninrecord" >
+    update staffclassperiodsigninrecord
+    set signInTime = #{signintime,jdbcType=TIME},
+      lateNo = #{lateno,jdbcType=BIT},
+      signInWayId = #{signinwayid,jdbcType=INTEGER},
+      SignInNumber = #{signinnumber,jdbcType=VARCHAR},
+      signBackTime = #{signbacktime,jdbcType=TIME},
+      leaveEarlyNo = #{leaveearlyno,jdbcType=BIT},
+      SignBackWayId = #{signbackwayid,jdbcType=INTEGER},
+      signBackNumber = #{signbacknumber,jdbcType=VARCHAR},
+      attendanceClassChildId = #{attendanceclasschildid,jdbcType=INTEGER},
+      classPeriodId = #{classperiodid,jdbcType=INTEGER},
+      staffClassesRecordId = #{staffclassesrecordid,jdbcType=INTEGER}
+    where staffClassPeriodSignInRecordId = #{staffclassperiodsigninrecordid,jdbcType=INTEGER}
+  </update>
+  
+
+  
+  
+  
+</mapper>

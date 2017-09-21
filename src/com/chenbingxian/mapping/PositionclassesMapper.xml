@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chenbingxian.dao.PositionclassesMapper" >
+  <resultMap id="BaseResultMap" type="com.chenbingxian.po.Positionclasses" >
+    <constructor >
+      <idArg column="positionClassesId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="classesNumber" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="classesName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="classTypeId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    positionClassesId, classesNumber, classesName, classTypeId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from positionclasses
+    where positionClassesId = #{positionclassesid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_table8(
+    staffClassesRecordId INT
+		)
+		;
+    INSERT INTO tmp_table8(staffClassesRecordId)
+    SELECT  staffclassesrecord.staffClassesRecordId
+    FROM
+    webattendance.staffclassperiodsigninrecord
+    INNER JOIN webattendance.classperiod 
+        ON (staffclassperiodsigninrecord.classPeriodId = classperiod.classPeriodId)
+    INNER JOIN webattendance.staffclassesrecord 
+    ON (staffclassperiodsigninrecord.staffClassesRecordId = staffclassesrecord.staffClassesRecordId)
+    WHERE  classperiod.positionClassesId=#{positionClassesId} AND staffclassesrecord.workDate>NOW()
+    GROUP BY staffclassesrecord.staffClassesRecordId;
+        DELETE FROM staffclassesrecord 
+    WHERE staffclassesrecord.staffClassesRecordId IN (SELECT staffClassesRecordId FROM tmp_table8);
+
+    DELETE FROM staffclassperiodsigninrecord 
+    WHERE staffclassperiodsigninrecord.staffClassesRecordId IN(SELECT staffClassesRecordId FROM tmp_table8);
+    UPDATE classperiod SET deleteNo=1
+    WHERE classperiod.positionClassesId=#{positionClassesId};
+    UPDATE positionclasses SET deleteNo=1 
+    WHERE positionclasses.positionClassesId=#{positionClassesId};
+    DROP TABLE IF EXISTS tmp_table8; 
+  </delete>
+  <insert id="insert" parameterType="com.chenbingxian.po.Positionclasses" >
+    <selectKey resultType="java.lang.Integer" keyProperty="positionclassesid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into positionclasses (classesNumber, classesName,
+      classTypeId,deleteNo)
+    values (#{classesnumber,jdbcType=VARCHAR}, #{classesname,jdbcType=VARCHAR},
+      #{classtypeid,jdbcType=INTEGER},0)
+  </insert>
+  <insert id="insertSelective" parameterType="com.chenbingxian.po.Positionclasses" >
+    <selectKey resultType="java.lang.Integer" keyProperty="positionclassesid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into positionclasses
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="classesnumber != null" >
+        classesNumber,
+      </if>
+      <if test="classesname != null" >
+        classesName,
+      </if>
+      
+      <if test="classtypeid != null" >
+        classTypeId,
+      </if>
+      deleteNo,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="classesnumber != null" >
+        #{classesnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="classesname != null" >
+        #{classesname,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="classtypeid != null" >
+        #{classtypeid,jdbcType=INTEGER},
+      </if>
+      0,
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.chenbingxian.po.Positionclasses" >
+    update positionclasses
+    <set >
+      <if test="classesnumber != null" >
+        classesNumber = #{classesnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="classesname != null" >
+        classesName = #{classesname,jdbcType=VARCHAR},
+      </if>
+     
+      <if test="classtypeid != null" >
+        classTypeId = #{classtypeid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where positionClassesId = #{positionclassesid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.chenbingxian.po.Positionclasses" >
+    update positionclasses
+    set classesNumber = #{classesnumber,jdbcType=VARCHAR},
+      classesName = #{classesname,jdbcType=VARCHAR},
+    
+      classTypeId = #{classtypeid,jdbcType=INTEGER}
+    where positionClassesId = #{positionclassesid,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectAllClasses" resultType="com.chenbingxian.po.Positionclasses">
+    SELECT    positionClasses.classTypeId, positionClasses.positionClassesId, positionClasses.classesNumber, positionClasses.classesName, 
+                 attributeGatherChild.Name as 'classtype.name'
+    FROM       positionClasses INNER JOIN
+                 attributeGatherChild ON positionClasses.classTypeId = attributeGatherChild.attributeGatherChildId
+    where positionClasses.deleteNo=0;
+  </select>
+ 
+  <select id="selectClass" resultType="com.chenbingxian.po.Positionclasses">
+    SELECT    positionClassesId, classesName, classesNumber,(
+    SELECT GROUP_CONCAT(CONCAT(SUBSTRING(startChargeTime, 1, 5),'--'), 
+   SUBSTRING(endChargeTime,1,5) SEPARATOR ',') FROM (SELECT * FROM classperiod  WHERE classperiod.deleteNo=0
+   ORDER BY startChargeTime)AS tb WHERE positionClassesId=positionClasses.positionClassesId
+	)AS banduanxinxi
+   FROM       positionClasses  
+   WHERE positionClasses.deleteNo=0
+   </select>
+    <!-- 查询该班次是否正在使用中 -->
+  <select id="selectClassUseNo" resultType="com.chenbingxian.vo.Number">
+    SELECT COUNT(*) as number
+    FROM
+    webattendance.staffclassperiodsigninrecord
+    INNER JOIN webattendance.classperiod 
+    ON (staffclassperiodsigninrecord.classPeriodId = classperiod.classPeriodId)
+    INNER JOIN webattendance.staffclassesrecord 
+    ON (staffclassperiodsigninrecord.staffClassesRecordId = staffclassesrecord.staffClassesRecordId)
+    WHERE  classperiod.positionClassesId=#{positionClassesId} AND staffclassesrecord.workDate>NOW();
+   </select>
+  
+   
+  
+</mapper>

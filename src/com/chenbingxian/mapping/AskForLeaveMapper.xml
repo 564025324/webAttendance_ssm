@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chenbingxian.dao.AskForLeaveMapper">
+	<resultMap id="BaseResultMap" type="com.chenbingxian.po.AskForLeave">
+		<constructor>
+			<idArg column="askForLeaveId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<arg column="proposerId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<arg column="registrationTypeId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<arg column="startDate" jdbcType="DATE" javaType="java.util.Date" />
+			<arg column="endDate" jdbcType="DATE" javaType="java.util.Date" />
+			<arg column="operationStaffId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<arg column="operatingTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+			<arg column="checkTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+			<arg column="checkManId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+		</constructor>
+	</resultMap>
+	<sql id="Base_Column_List">
+		askForLeaveId, proposerId, registrationTypeId, startDate, endDate, operationStaffId,
+		operatingTime, checkTime, checkManId
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from askforleave
+		where askForLeaveId = #{askforleaveid,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from askforleave
+		where askForLeaveId = #{askforleaveid,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.chenbingxian.po.AskForLeave">
+		<selectKey resultType="java.lang.Integer" keyProperty="askforleaveid"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into askforleave (proposerId, registrationTypeId, startDate,
+		endDate, operationStaffId, operatingTime,
+		checkTime, checkManId,checkTypeId)
+		values (#{proposerid,jdbcType=INTEGER},
+		#{registrationtypeid,jdbcType=INTEGER}, #{startdate,jdbcType=DATE},
+		#{enddate,jdbcType=DATE}, #{operationstaffid,jdbcType=INTEGER},
+		#{operatingtime,jdbcType=TIMESTAMP},
+		#{checktime,jdbcType=TIMESTAMP}, #{checkmanid,jdbcType=INTEGER},33)
+	</insert>
+	<insert id="insertSelective" parameterType="com.chenbingxian.po.AskForLeave">
+		<selectKey resultType="java.lang.Integer" keyProperty="askforleaveid"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into askforleave
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="proposerid != null">
+				proposerId,
+			</if>
+			<if test="registrationtypeid != null">
+				registrationTypeId,
+			</if>
+			<if test="startdate != null">
+				startDate,
+			</if>
+			<if test="enddate != null">
+				endDate,
+			</if>
+			<if test="operationstaffid != null">
+				operationStaffId,
+			</if>
+			<if test="operatingtime != null">
+				operatingTime,
+			</if>
+			<if test="checktime != null">
+				checkTime,
+			</if>
+			<if test="checkmanid != null">
+				checkManId,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="groupid != null">
+				groupid,
+			</if>
+			<if test="workNo != null">
+				workNo,
+			</if>
+			
+			checkTypeId,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="proposerid != null">
+				#{proposerid,jdbcType=INTEGER},
+			</if>
+			<if test="registrationtypeid != null">
+				#{registrationtypeid,jdbcType=INTEGER},
+			</if>
+			<if test="startdate != null">
+				#{startdate,jdbcType=DATE},
+			</if>
+			<if test="enddate != null">
+				#{enddate,jdbcType=DATE},
+			</if>
+			<if test="operationstaffid != null">
+				#{operationstaffid,jdbcType=INTEGER},
+			</if>
+			<if test="operatingtime != null">
+				#{operatingtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="checktime != null">
+				#{checktime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="checkmanid != null">
+				#{checkmanid,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				#{remark},
+			</if>
+			<if test="groupid != null">
+				#{groupid},
+			</if>
+			<if test="workNo != null">
+				#{workNo},
+			</if>
+			33,
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.chenbingxian.po.AskForLeave">
+		update askforleave
+		<set>
+			<if test="proposerid != null">
+				proposerId = #{proposerid,jdbcType=INTEGER},
+			</if>
+			<if test="registrationtypeid != null">
+				registrationTypeId = #{registrationtypeid,jdbcType=INTEGER},
+			</if>
+			<if test="startdate != null">
+				startDate = #{startdate,jdbcType=DATE},
+			</if>
+			<if test="enddate != null">
+				endDate = #{enddate,jdbcType=DATE},
+			</if>
+			<if test="operationstaffid != null">
+				operationStaffId = #{operationstaffid,jdbcType=INTEGER},
+			</if>
+			<if test="operatingtime != null">
+				operatingTime = #{operatingtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="checktime != null">
+				checkTime = #{checktime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="checkmanid != null">
+				checkManId = #{checkmanid,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=INTEGER},
+			</if>
+			<if test="checkTypeId != null">
+				checkTypeId = #{checkTypeId,jdbcType=INTEGER},
+			</if>
+			<if test="writeBack != null">
+				writeBack = #{writeBack},
+			</if>
+
+		</set>
+		where askForLeaveId = #{askforleaveid,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.chenbingxian.po.AskForLeave">
+		update askforleave
+		set proposerId = #{proposerid,jdbcType=INTEGER},
+		registrationTypeId = #{registrationtypeid,jdbcType=INTEGER},
+		startDate = #{startdate,jdbcType=DATE},
+		endDate = #{enddate,jdbcType=DATE},
+		operationStaffId = #{operationstaffid,jdbcType=INTEGER},
+		operatingTime = #{operatingtime,jdbcType=TIMESTAMP},
+		checkTime = #{checktime,jdbcType=TIMESTAMP},
+		checkManId = #{checkmanid,jdbcType=INTEGER}
+		where askForLeaveId = #{askforleaveid,jdbcType=INTEGER}
+	</update>
+	<!-- /**新增申请加班的班次**/ -->
+	<insert id="insertAskForLeaveMx">
+		<selectKey resultType="java.lang.Integer" keyProperty="askforleaveid"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into askforleavemx (positionClassesId, askForLeaveId)
+		values (#{positionClassesId,jdbcType=INTEGER},
+		#{askForLeaveId,jdbcType=INTEGER})
+	</insert>
+	<select id="selectAskForLeave" resultType="com.chenbingxian.vo.MyAskForLeave">
+		SELECT
+		IF(ISNULL(positionClasses.positionClassesId),SUBSTRING(askForLeave.startDate,
+		1, 16),SUBSTRING(askForLeave.startDate, 1, 10)) AS startDate,
+		IF(ISNULL(positionClasses.positionClassesId),SUBSTRING(askForLeave.endDate,
+		1, 16)
+		,SUBSTRING(askForLeave.endDate, 1, 10)) AS endDate,
+		SUBSTRING(askForLeave.operatingTime, 1, 16) AS operatingTime, SUBSTRING(askForLeave.checkTime, 1, 16) AS
+		checkTime,
+		askForLeave.registrationTypeId, attendanceClassChild.dealWithName AS 'registrationtypeName',
+		askForLeave.proposerId,
+		staff.staffName AS 'operationstaffName', askForLeave.operationStaffId,
+		askForLeave.checkManId,
+		staff_1.staffName AS 'checkmanName', positionClasses.classesName AS 'className',
+		askForLeave.remark,
+		askForLeave.checkTypeId, attributeGatherChild.Name AS 'checkTypeName',
+		positionClasses.positionClassesId,
+		askforleavemx.askForLeaveMxId, askForLeave.askForLeaveId,
+		attendanceclasschild.attendanceCTypeId,askForLeave.writeBack
+		FROM attendanceClassChild RIGHT OUTER JOIN
+		askForLeave INNER JOIN
+		attributeGatherChild ON askForLeave.checkTypeId =
+		attributeGatherChild.attributeGatherChildId ON
+		attendanceClassChild.attendanceClassChildId =
+		askForLeave.registrationTypeId LEFT OUTER JOIN
+		askforleavemx INNER JOIN
+		positionClasses ON askforleavemx.positionClassesId =
+		positionClasses.positionClassesId ON
+		askForLeave.askForLeaveId = askforleavemx.askForLeaveId LEFT OUTER JOIN
+		staff AS staff_1 ON askForLeave.checkManId = staff_1.staffId LEFT OUTER
+		JOIN
+		staff ON askForLeave.operationStaffId = staff.staffId
+		where proposerId=#{staffid}
+		<if test="startDate !='' and endDate!=''">
+			and startDate between #{startDate}
+			and #{endDate}
+		</if>
+		<if test="checkTypeId!=0">
+			and checkTypeId=#{checkTypeId}
+		</if>
+		<if test="registrationTypeId!=0">
+			and registrationTypeId=#{registrationTypeId}
+		</if>
+
+	</select>
+	<!-- 根据加班类别查询班组中对应的班次 -->
+	<select id="selectClassByAttendanceClassChildId" resultType="com.chenbingxian.po.Positionclasses">
+		SELECT positionClasses.positionClassesId, positionClasses.classesName
+		FROM classesgroup INNER JOIN
+		positionClasses ON classesgroup.positionClassesId = positionClasses.positionClassesId
+		INNER JOIN
+		classPeriod ON positionClasses.positionClassesId = classPeriod.positionClassesId
+		WHERE classesgroup.groupId IN(SELECT staff.groupId FROM staff WHERE
+		staff.staffId=#{staffId})AND
+		classPeriod.attendanceClassChildId=#{attendanceClassChildId}
+		GROUP BY classesgroup.groupId,positionClasses.positionClassesId
+	</select>
+	<!-- 修改加班班次 -->
+	<update id="updateByAskForLeaveMxId">
+		update askforleavemx
+		set positionClassesId = #{positionClassesId,jdbcType=INTEGER}
+		where askForLeaveMxId=#{askForLeaveMxId,jdbcType=INTEGER}
+	</update>
+	<!--删除加班班次 -->
+	<delete id="deleteByAskForLeaveMxId" parameterType="java.lang.Integer">
+		delete from askforleavemx
+		where askForLeaveMxId = #{askForLeaveMxId,jdbcType=INTEGER}
+	</delete>
+
+	<!-- 查询所有员工请假、加班、出差的申请 -->
+	<select id="selectAllAskForLeave" resultType="com.chenbingxian.vo.MyAskForLeave">
+		SELECT
+		IF(ISNULL(positionClasses.positionClassesId),SUBSTRING(askForLeave.startDate,
+		1, 16),SUBSTRING(askForLeave.startDate, 1, 10)) AS startDate,
+		IF(ISNULL(positionClasses.positionClassesId),SUBSTRING(askForLeave.endDate,
+		1, 16),SUBSTRING(askForLeave.endDate, 1, 10)) AS endDate,
+		SUBSTRING(askForLeave.operatingTime, 1, 16) AS operatingTime,
+		SUBSTRING(askForLeave.checkTime, 1, 16) AS checkTime,
+		askForLeave.registrationTypeId, attendanceClassChild.dealWithName AS
+		'registrationtypeName', askForLeave.proposerId,
+		staff.staffName AS 'operationstaffName', askForLeave.operationStaffId,
+		askForLeave.checkManId,
+		staff_1.staffName AS 'checkmanName', positionClasses.classesName AS 'className',
+		askForLeave.remark,
+		askForLeave.checkTypeId, attributeGatherChild.Name AS 'checkTypeName',
+		positionClasses.positionClassesId,
+		askforleavemx.askForLeaveMxId, askForLeave.askForLeaveId,attendanceclasschild.attendanceCTypeId,
+		askForLeave.writeBack,staff.groupId AS 'groupid'
+		FROM attendanceClassChild RIGHT OUTER JOIN
+		askForLeave INNER JOIN
+		attributeGatherChild ON askForLeave.checkTypeId =
+		attributeGatherChild.attributeGatherChildId ON
+		attendanceClassChild.attendanceClassChildId =
+		askForLeave.registrationTypeId LEFT OUTER JOIN
+		askforleavemx INNER JOIN
+		positionClasses ON askforleavemx.positionClassesId =
+		positionClasses.positionClassesId ON
+		askForLeave.askForLeaveId = askforleavemx.askForLeaveId LEFT OUTER JOIN
+		staff AS staff_1 ON askForLeave.checkManId = staff_1.staffId LEFT OUTER
+		JOIN
+		staff ON askForLeave.operationStaffId = staff.staffId
+
+		<if test="checkTypeId!=0">
+			where checkTypeId=#{checkTypeId}
+		</if>
+	</select>
+	<!--根据申请的请假、出差的时间段查询员工签到记录然后修改考勤状态 -->
+	<update id="updateRecord">
+		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_table (
+		shangBanShiJian
+		DATETIME ,
+		xiaBanShiJian DATETIME ,
+		yuanGongId INT,
+		qianDaoBiaoZhuJianId
+		INT
+		)
+		;
+           <!-- 查询在请假日期间的班次新增入临时表 -->
+		INSERT into
+		tmp_table(shangBanShiJian,xiaBanShiJian,yuanGongId,qianDaoBiaoZhuJianId
+		)
+		SELECT concat(workDate,' ',goToWorkTime)as
+		goToWorkTime,IF((timeFromWork&lt;goToWorkTime),
+		CONCAT(DATE_ADD(workDate,INTERVAL 1 DAY),' ',timeFromWork),
+		concat(workDate,' ',timeFromWork))AS timeFromWork,
+		staffClassesRecord.staffId,
+		staffClassPeriodSignInRecord.staffClassPeriodSignInRecordId
+		FROM staffClassPeriodSignInRecord INNER JOIN
+		staffClassesRecord ON staffClassPeriodSignInRecord.staffClassesRecordId =
+		staffClassesRecord.staffClassesRecordId INNER JOIN
+		classPeriod ON staffClassPeriodSignInRecord.classPeriodId =
+		classPeriod.classPeriodId
+		where workDate BETWEEN SUBSTRING(#{startdate},1,10) and SUBSTRING(#{enddate},1,10)  and staffId=#{staffid}
+		;
+		<!-- #删除不在修改范围的留下要修改的 -->
+		delete from tmp_table
+		where xiaBanShiJian&lt; #{startdate} or shangBanShiJian>#{enddate}
+		or xiaBanShiJian= #{startdate}  or shangBanShiJian=#{enddate}
+		;
+		<!--修改考勤状态-->
+		update staffclassperiodsigninrecord set attendanceClassChildId=#{attendanceClassChildId}
+		where staffClassPeriodSignInRecordId in(SELECT qianDaoBiaoZhuJianId FROM
+		tmp_table)
+		;
+		DROP TABLE IF EXISTS tmp_table
+		;
+	</update>
+	<!--删除申请加班时段的签到表的信息和工作日表的信息-->
+     <delete id="deleteRecord">
+    	CREATE TEMPORARY TABLE IF NOT EXISTS tmp_table1 (
+		staffClassesRecordId int 
+		)
+		;
+        insert into tmp_table1 (staffClassesRecordId)
+        SELECT staffClassesRecordId from staffclassesrecord 
+        where workDate BETWEEN SUBSTRING(#{startdate},1,10) AND SUBSTRING(#{enddate},1,10) and staffId=#{staffid};
+        delete from staffclassperiodsigninrecord
+        where staffClassesRecordId in(select staffClassesRecordId from tmp_table1);
+        delete from staffclassesrecord 
+        where staffclassesrecord.staffClassesRecordId in(select staffClassesRecordId from tmp_table1);
+        DROP TABLE IF EXISTS tmp_table1;
+    </delete>
+       <!--新增申请加班的信息到工作日记录表和签到记录表 -->
+    <insert id="insertRecordAndSigninRecord">
+    <if test="listInsert!=null">
+			CREATE TEMPORARY TABLE IF NOT EXISTS tmp_insert (
+			riqi DATE,
+			yuangongid INT,
+			banci INT,
+			banzuid INT
+			);
+			CREATE TEMPORARY TABLE IF NOT
+			EXISTS tmp_ZhiDuMx (
+			yuangongid INT,
+			zdzdId INT,
+			jbzdId INT,
+			wczdId INT,
+			wbczdId INT,
+			qtzdId INT
+			);
+			insert into
+			tmp_ZhiDuMx(yuangongid,zdzdId,jbzdId,wczdId,wbczdId,qtzdId)
+			select
+			staffId,(select max(lateAndLeaveEarlySystemId) from
+			lateandleaveearlysystem where systemId=staff.systemId and deleteNo=0)
+			as zdzdId,(select max(overtimeSystemId) from overtimesystem where
+			systemId=staff.systemId and deleteNo=0) as jbzdId,
+			(select
+			max(goOutSystemId) from gooutsystem where systemId=staff.systemId
+			and
+			deleteNo=0) as wczdId,
+			(select max(notClassesSystemId) from
+			notclassessystem where
+			systemId=staff.systemId and deleteNo=0) as
+			wbczdId,
+			(select max(otherStystemId) from otherstystem where
+			systemId=staff.systemId and deleteNo=0) as qtzdId
+			from staff
+			where
+			staffId=#{staffid,jdbcType=INTEGER};
+
+			INSERT INTO tmp_insert
+			(riqi,yuangongid,banci,banzuid) VALUES
+			<foreach collection="listInsert" item="item" separator=",">
+				(#{item.workdate},#{item.staffid},#{item.classid},#{item.groupid})
+			</foreach>
+			;
+			insert into staffclassesrecord
+			(workDate,staffId,groupId,lateAndLeaveEarlySystemId,
+			overtimeSystemId,goOutSystemId,notClassesSystemId,otherStystemId)
+			select
+			riqi,tmp_ZhiDuMx.yuangongid,banzuid,zdzdId,jbzdId,wczdId,wbczdId,qtzdId
+			from tmp_insert inner join tmp_ZhiDuMx on
+			tmp_insert.yuangongid=tmp_ZhiDuMx.yuangongid;
+			insert into
+			staffclassperiodsigninrecord
+			(classPeriodId,staffClassesRecordId,attendanceClassChildId)
+			SELECT
+			classPeriod.classPeriodId,staffClassesRecord.staffClassesRecordId,classPeriod.attendanceClassChildId
+			FROM tmp_insert INNER JOIN
+			classPeriod ON tmp_insert.banci =
+			classPeriod.positionClassesId,
+			staffClassesRecord
+			where
+			staffClassesRecord.staffid=tmp_insert.yuangongid and
+			staffClassesRecord.workDate=tmp_insert.riqi and
+			classPeriod.deleteNo=0
+			;
+			DROP TABLE IF EXISTS tmp_ZhiDuMx;
+			DROP TABLE IF
+			EXISTS tmp_insert;
+		</if>
+    
+    </insert>
+
+
+</mapper>

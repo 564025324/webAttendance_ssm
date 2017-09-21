@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chenbingxian.dao.ShiftMapper" >
+  <resultMap id="BaseResultMap" type="com.chenbingxian.po.Shift" >
+    <constructor >
+      <idArg column="shiftId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="shiftNumber" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="shiftName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="staffPositionId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    shiftId, shiftNumber, shiftName, staffPositionId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from shift
+    where shiftId = #{shiftid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from shift
+    where shiftId = #{shiftid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.chenbingxian.po.Shift" >
+    <selectKey resultType="java.lang.Integer" keyProperty="shiftid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into shift (shiftNumber, shiftName, staffPositionId
+      )
+    values (#{shiftnumber,jdbcType=VARCHAR}, #{shiftname,jdbcType=VARCHAR}, #{staffpositionid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.chenbingxian.po.Shift" >
+    <selectKey resultType="java.lang.Integer" keyProperty="shiftid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into shift
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="shiftnumber != null" >
+        shiftNumber,
+      </if>
+      <if test="shiftname != null" >
+        shiftName,
+      </if>
+      <if test="staffpositionid != null" >
+        staffPositionId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="shiftnumber != null" >
+        #{shiftnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="shiftname != null" >
+        #{shiftname,jdbcType=VARCHAR},
+      </if>
+      <if test="staffpositionid != null" >
+        #{staffpositionid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.chenbingxian.po.Shift" >
+    update shift
+    <set >
+      <if test="shiftnumber != null" >
+        shiftNumber = #{shiftnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="shiftname != null" >
+        shiftName = #{shiftname,jdbcType=VARCHAR},
+      </if>
+      <if test="staffpositionid != null" >
+        staffPositionId = #{staffpositionid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where shiftId = #{shiftid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.chenbingxian.po.Shift" >
+    update shift
+    set shiftNumber = #{shiftnumber,jdbcType=VARCHAR},
+      shiftName = #{shiftname,jdbcType=VARCHAR},
+      staffPositionId = #{staffpositionid,jdbcType=INTEGER}
+    where shiftId = #{shiftid,jdbcType=INTEGER}
+  </update>
+  
+ <!--新增的 -->
+  <select id="selectShiftByPositionid" resultType="com.chenbingxian.po.Shift" parameterType="java.lang.Integer" >
+  SELECT    shiftId, shiftName, shiftNumber, staffPositionId
+   FROM       shift
+    where staffPositionId = #{id,jdbcType=INTEGER}
+  </select>
+</mapper>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chenbingxian.dao.PersonAttendanceDao">
+
+	<!--个人班次信息查询 -->
+	<select id="selectPersonClass" resultType="com.chenbingxian.vo.MyClass">
+  SELECT GROUP_CONCAT(staffClassPeriodSignInRecordId,'_',QianDao,'_',QianTui,'_',IF(ChiDao IS NULL,0,ChiDao),'_',IF(ZaoTui IS NULL,0,ZaoTui),'_',KaoQinLeiBie,'_',attendanceCTypeId) AS 'signInformation'
+  ,workDate, groupId, groupName, 
+                classPeriodId, positionClassesId,classesName, 
+                classesNumber, staffId,dealWithName,CONCAT(workDate,' ',SUBSTRING(goToWorkTime,1,5)) AS goToWorkTime,IF(timeFromWork>goToWorkTime,CONCAT(workDate,' ',SUBSTRING(timeFromWork,1,5)),
+                 CONCAT(DATE_ADD(workDate,INTERVAL 1 DAY),' ',timeFromWork) )AS timeFromWork,
+                 CONCAT(workDate,' ',startChargeTime)AS startChargeTime, 
+                 IF(timeFromWork>goToWorkTime,CONCAT(workDate,' ',endChargeTime),
+                 CONCAT(DATE_ADD(workDate,INTERVAL 1 DAY),' ',endChargeTime) )AS  endChargeTime
+   from
+   (
+   
+   SELECT (case when goToWorkTime>timeFromWork  then if(concat(DATE_ADD(workDate,INTERVAL 1 DAY),' ',timeFromWork)&lt;now()
+   ,if(goToWorkChargeNo=1,if(SignInTime is null,'缺签',SUBSTRING(SUBSTRING(SignInTime,12,14),1,5)),goToWorkTime
+   ),
+   
+   if(concat(workDate,' ',goToWorkTime)&lt;now(),if(goToWorkChargeNo=1,if(SignInTime is null,
+   '----',SUBSTRING(SUBSTRING(SignInTime,12,14),1,5)),goToWorkTime),'----')
+   
+   )
+   when goToWorkTime&lt;timeFromWork then if(concat(workDate,' ',timeFromWork)&lt;now(),
+   if(goToWorkChargeNo=1,if(SignInTime is null,'缺签',SUBSTRING(SUBSTRING(SignInTime,12,14),1,5)),SUBSTRING(goToWorkTime,1,5)
+   ),
+   
+  IF(CONCAT(workDate,' ',goToWorkTime)&lt;NOW(),IF(goToWorkChargeNo=1,IF(SignInTime IS NULL,
+   '----',SUBSTRING(SUBSTRING(SignInTime,12,14),1,5)),SUBSTRING(goToWorkTime,1,5)),'----')
+   
+   )
+    else if(SignInTime is null,if(signBackTime is null,'----','缺签'),SUBSTRING(SUBSTRING(SignInTime,12,14),1,5))  #不定时班次
+    end)  AS 'QianDao',
+     (case when goToWorkTime>timeFromWork  then if(concat(DATE_ADD(workDate,INTERVAL 1 DAY),' ',timeFromWork)&lt;now()
+   ,if(timeFromWorkChargeNo=1,if(signBackTime is null,'缺签',SUBSTRING(SUBSTRING(signBackTime,12,14),1,5)),SUBSTRING(timeFromWork,1,5)
+   ),
+  
+   if(signBackTime is null,'----',SUBSTRING(SUBSTRING(signBackTime,12,14),1,5))
+   
+   ) 	
+   when goToWorkTime&lt;timeFromWork then if(concat(workDate,' ',timeFromWork)&lt;now(),
+   if(timeFromWorkChargeNo=1,if(signBackTime is null,'缺签',SUBSTRING(SUBSTRING(signBackTime,12,14),1,5)),SUBSTRING(timeFromWork,1,5)
+   ),
+   
+   if(signBackTime is null,'----',SUBSTRING(SUBSTRING(signBackTime,12,14),1,5))
+   
+   )
+    else if(signBackTime is null,if(SignInTime is null,'----','缺签'),SUBSTRING(SUBSTRING(signBackTime,12,14),1,5))  #不定时班次
+    end)  AS 'QianTui', 
+    staffClassPeriodSignInRecordId,attendanceClassChild_1.dealWithName as 'KaoQinLeiBie', staffClassPeriodSignInRecord.lateNo as 'ChiDao', 
+                 staffClassPeriodSignInRecord.leaveEarlyNo as 'ZaoTui',
+     staffClassesRecord.workDate, staffClassesRecord.groupId, attributeGatherChild.Name AS groupName, 
+                 staffClassPeriodSignInRecord.classPeriodId, classPeriod.positionClassesId, positionClasses.classesName, 
+                 positionClasses.classesNumber, staffClassesRecord.staffId, SUBSTRING(classPeriod.goToWorkTime, 1, 5) AS goToWorkTime, 
+                 SUBSTRING(classPeriod.timeFromWork, 1, 5) AS timeFromWork, SUBSTRING(classPeriod.startChargeTime, 1, 5) AS startChargeTime, 
+                 SUBSTRING(classPeriod.endChargeTime, 1, 5) AS endChargeTime, attendanceClassChild.dealWithName,
+                 attendanceClassChild_1.attendanceCTypeId as 'attendanceCTypeId'
+       FROM       staffClassesRecord INNER JOIN
+                 staffClassPeriodSignInRecord ON 
+                 staffClassesRecord.staffClassesRecordId = staffClassPeriodSignInRecord.staffClassesRecordId INNER JOIN
+                 attributeGatherChild ON staffClassesRecord.groupId = attributeGatherChild.attributeGatherChildId INNER JOIN
+                 classPeriod ON staffClassPeriodSignInRecord.classPeriodId = classPeriod.classPeriodId INNER JOIN
+                 positionClasses ON classPeriod.positionClassesId = positionClasses.positionClassesId INNER JOIN
+                 attendanceClassChild ON classPeriod.attendanceClassChildId = attendanceClassChild.attendanceClassChildId INNER JOIN
+                 attendanceClassChild AS attendanceClassChild_1 ON 
+                 staffClassPeriodSignInRecord.attendanceClassChildId = attendanceClassChild_1.attendanceClassChildId
+       
+        where workDate BETWEEN
+		#{beginDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR} and
+		staffId=#{staffid,jdbcType=INTEGER}
+      )as tb
+       group by workDate,classPeriodId
+      
+	
+<!-- 	
+	SELECT    staffClassesRecord.workDate, staffClassesRecord.groupId, attributeGatherChild.Name AS groupName, 
+                 staffClassPeriodSignInRecord.classPeriodId, classPeriod.positionClassesId, positionClasses.classesName, 
+                 positionClasses.classesNumber, staffClassesRecord.staffId, SUBSTRING(classPeriod.goToWorkTime, 1, 5) AS goToWorkTime, 
+                 SUBSTRING(classPeriod.timeFromWork, 1, 5) AS timeFromWork, SUBSTRING(classPeriod.startChargeTime, 1, 5) AS startChargeTime, 
+                 SUBSTRING(classPeriod.endChargeTime, 1, 5) AS endChargeTime, 
+                 attendanceClassChild.dealWithName
+FROM       staffClassesRecord INNER JOIN
+                 staffClassPeriodSignInRecord ON 
+                 staffClassesRecord.staffClassesRecordId = staffClassPeriodSignInRecord.staffClassesRecordId INNER JOIN
+                 attributeGatherChild ON staffClassesRecord.groupId = attributeGatherChild.attributeGatherChildId INNER JOIN
+                 classPeriod ON staffClassPeriodSignInRecord.classPeriodId = classPeriod.classPeriodId INNER JOIN
+                 positionClasses ON classPeriod.positionClassesId = positionClasses.positionClassesId INNER JOIN
+                 attendanceClassChild ON classPeriod.attendanceClassChildId = attendanceClassChild.attendanceClassChildId	
+		where workDate BETWEEN
+		#{beginDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR} and
+		staffId=#{staffid,jdbcType=INTEGER}
+		group by workDate,classPeriodId
+		order by timeFromwork
+		 -->
+		
+	</select>
+	<!--查询考勤个人打卡的班段等信息 -->
+	<select id="selectPunchCard" resultType="com.chenbingxian.vo.PunchCard">
+
+SELECT    positionClasses.classTypeId, staffClassPeriodSignInRecord.staffClassPeriodSignInRecordId, 
+                 positionClasses.classesName AS className, attributeGatherChild.Name AS groupName, SUBSTRING(classPeriod.goToWorkTime, 1, 
+                 5) AS goToWorkTime, SUBSTRING(classPeriod.timeFromWork, 1, 5) AS timeFromWork, classPeriod.startChargeTime, 
+                 classPeriod.endChargeTime, staffClassPeriodSignInRecord.SignInTime, staffClassPeriodSignInRecord.signBackTime, 
+                 staffClassPeriodSignInRecord.lateNo, staffClassPeriodSignInRecord.leaveEarlyNo, classPeriod.goToWorkChargeNo, 
+                 classPeriod.timeFromWorkChargeNo, classPeriod.calculateLeftEarlyNo, classPeriod.calculateAbsenceNo, 
+                 lateandleaveearlysystem.lateTime, lateandleaveearlysystem.lateAbsenteeismTime, lateandleaveearlysystem.LeaveEarlyTime, 
+                 lateandleaveearlysystem.LeaveEarlyAbsenteeismTime, notClassesSystem.longWorkTime, notClassesSystem.longWorkTimeToZero, 
+                 otherStystem.timeToOne, staffClassesRecord.workDate, attendanceClassChild.dealWithName, 
+                 attendanceClassChild.attendanceCTypeId , staffClassPeriodSignInRecord.attendanceClassChildId, 
+                 staffClassPeriodSignInRecord.classPeriodId, staffClassPeriodSignInRecord.staffClassesRecordId
+FROM       staffClassPeriodSignInRecord INNER JOIN
+                 staffClassesRecord ON staffClassPeriodSignInRecord.staffClassesRecordId = staffClassesRecord.staffClassesRecordId INNER JOIN
+                 classPeriod ON staffClassPeriodSignInRecord.classPeriodId = classPeriod.classPeriodId INNER JOIN
+                 positionClasses ON classPeriod.positionClassesId = positionClasses.positionClassesId INNER JOIN
+                 attributeGatherChild ON staffClassesRecord.groupId = attributeGatherChild.attributeGatherChildId INNER JOIN
+                 lateandleaveearlysystem ON 
+                 staffClassesRecord.lateAndLeaveEarlySystemId = lateandleaveearlysystem.lateAndLeaveEarlySystemId INNER JOIN
+                 notClassesSystem ON staffClassesRecord.notClassesSystemId = notClassesSystem.notClassesSystemId INNER JOIN
+                 otherStystem ON staffClassesRecord.otherStystemId = otherStystem.otherStystemId INNER JOIN
+                 attendanceClassChild ON staffClassPeriodSignInRecord.attendanceClassChildId = attendanceClassChild.attendanceClassChildId
+        where staffclassesrecord.workDate=#{workDate,jdbcType=VARCHAR} and
+		  staffclassesrecord.staffId=#{staffId,jdbcType=INTEGER}
+	</select>
+	<!--正常班次签到-->
+ <!--    <update id="updateClassperiodsigninrecord" >
+        UPDATE staffclassperiodsigninrecord
+    <set >
+     <if test="signInTime!=''" >
+       signInTime=#{signInTime,jdbcType=VARCHAR},
+      </if>
+      <if test="lateNo!=-1" >
+      lateNo=#{lateNo,jdbcType=INTEGER},
+      </if>
+      <if test="attendanceClassChildId!=0" >
+       attendanceClassChildId=#{attendanceClassChildId,jdbcType=INTEGER},
+      </if>
+        <if test="signInWayId != 0" >
+       signInWayId=#{signInWayId,jdbcType=INTEGER},
+      </if>
+         <if test="SignInNumber != ''" >
+      SignInNumber=#{SignInNumber,jdbcType=VARCHAR},
+      </if>
+       <if test="signBackTime != ''" >
+      signBackTime=#{signBackTime,jdbcType=VARCHAR},
+      </if>
+        <if test="leaveEarlyNo !=0" >
+      leaveEarlyNo=#{leaveEarlyNo,jdbcType=INTEGER},
+      </if>
+      
+    </set>
+      WHERE staffClassPeriodSignInRecordId=#{staffClassPeriodSignInRecordId,jdbcType=INTEGER}
+    </update> -->
+    
+    <!--正常班次签到-->
+    <update id="updateClassperiodsigninrecord" parameterType="com.chenbingxian.po.Staffclassperiodsigninrecord" >
+    update staffclassperiodsigninrecord
+    <set >
+      <if test="signintime != null" >
+        signInTime = #{signintime,jdbcType=TIME},
+      </if>
+      <if test="lateno != null" >
+        lateNo = #{lateno,jdbcType=BIT},
+      </if>
+      <if test="signinwayid != null" >
+        signInWayId = #{signinwayid,jdbcType=INTEGER},
+      </if>
+      <if test="signinnumber != null" >
+        SignInNumber = #{signinnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="signbacktime != null" >
+        signBackTime = #{signbacktime,jdbcType=TIME},
+      </if>
+      <if test="leaveearlyno != null" >
+        leaveEarlyNo = #{leaveearlyno,jdbcType=BIT},
+      </if>
+      <if test="signbackwayid != null" >
+        SignBackWayId = #{signbackwayid,jdbcType=INTEGER},
+      </if>
+      <if test="signbacknumber != null" >
+        signBackNumber = #{signbacknumber,jdbcType=VARCHAR},
+      </if>
+      <if test="attendanceclasschildid != null" >
+        attendanceClassChildId = #{attendanceclasschildid,jdbcType=INTEGER},
+      </if>
+      <if test="classperiodid != null" >
+        classPeriodId = #{classperiodid,jdbcType=INTEGER},
+      </if>
+      <if test="staffclassesrecordid != null" >
+        staffClassesRecordId = #{staffclassesrecordid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where staffClassPeriodSignInRecordId = #{staffclassperiodsigninrecordid,jdbcType=INTEGER}
+  </update>
+  
+ 
+  
+  
+  
+</mapper>
