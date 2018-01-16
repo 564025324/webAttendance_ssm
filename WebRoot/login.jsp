@@ -22,19 +22,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <body>
   
    <form class="form-horizontal" action="main.jsp" method="post">
- 	<div class="login">
+ <div class="login">
 		 <div class="login-main">
 		 		<div class="login-top">
 		 			<img class="img" src="images/top.png" alt=""/>
 		 			<h1>WEB考勤管理系统</h1>
-		 			<input type="text" placeholder="用户名" required="">
+		 			<input type="text" placeholder="用户名"  required="">
 		 			<input type="password" placeholder="密码"  required="">
 		 			<div class="login-bottom">
-		 			<div class="login-check">
+		 			  <div class="login-check">
 			 			<label class="checkbox"><input type="checkbox" name="checkbox"  checked="checked" /><i> </i> 记 住 我</label>
-			 		</div>
-						<div class="clear"></div>
-					</div>
+			 		  </div>
+			 			<div class="clear"> </div>
+		 			</div>
+		 			  
 		 			<input type="submit" value="登录" />
 		 		</div>
 		 	</div>
