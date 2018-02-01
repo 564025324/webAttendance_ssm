@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lijwen.dao.SetholidaysMapper" >
+  <resultMap id="BaseResultMap" type="com.lijwen.po.Setholidays" >
+    <constructor >
+      <idArg column="holidaysId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="holidayName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="startDate" jdbcType="DATE" javaType="java.util.Date" />
+      <arg column="endDate" jdbcType="DATE" javaType="java.util.Date" />
+      <arg column="staffPositionId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    holidaysId, holidayName, startDate, endDate, staffPositionId, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from setholidays
+    where holidaysId = #{holidaysid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from setholidays
+    where holidaysId = #{holidaysid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lijwen.po.Setholidays" >
+    <selectKey resultType="java.lang.Integer" keyProperty="holidaysid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into setholidays (holidayName, startDate, endDate, 
+      staffPositionId, remark)
+    values (#{holidayname,jdbcType=VARCHAR}, #{startdate,jdbcType=DATE}, #{enddate,jdbcType=DATE}, 
+      #{staffpositionid,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lijwen.po.Setholidays" >
+    <selectKey resultType="java.lang.Integer" keyProperty="holidaysid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into setholidays
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="holidayname != null" >
+        holidayName,
+      </if>
+      <if test="startdate != null" >
+        startDate,
+      </if>
+      <if test="enddate != null" >
+        endDate,
+      </if>
+      <if test="staffpositionid != null" >
+        staffPositionId,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="holidayname != null" >
+        #{holidayname,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=DATE},
+      </if>
+      <if test="enddate != null" >
+        #{enddate,jdbcType=DATE},
+      </if>
+      <if test="staffpositionid != null" >
+        #{staffpositionid,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lijwen.po.Setholidays" >
+    update setholidays
+    <set >
+      <if test="holidayname != null" >
+        holidayName = #{holidayname,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=DATE},
+      </if>
+      <if test="enddate != null" >
+        endDate = #{enddate,jdbcType=DATE},
+      </if>
+      <if test="staffpositionid != null" >
+        staffPositionId = #{staffpositionid,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where holidaysId = #{holidaysid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lijwen.po.Setholidays" >
+    update setholidays
+    set holidayName = #{holidayname,jdbcType=VARCHAR},
+      startDate = #{startdate,jdbcType=DATE},
+      endDate = #{enddate,jdbcType=DATE},
+      staffPositionId = #{staffpositionid,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where holidaysId = #{holidaysid,jdbcType=INTEGER}
+  </update>
+</mapper>

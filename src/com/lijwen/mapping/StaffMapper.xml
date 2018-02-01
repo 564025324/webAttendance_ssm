@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lijwen.dao.StaffMapper">
+	<resultMap id="BaseResultMap" type="com.lijwen.po.Staff">
+		<constructor>
+			<idArg column="staffId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<arg column="staffName" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="staffNumber" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="loginNumber" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="idCar" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="cardNumber" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="dateOfEntry" jdbcType="DATE" javaType="java.util.Date" />
+			<arg column="sex" jdbcType="BIT" javaType="java.lang.Boolean" />
+			<arg column="staffPositionId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<arg column="username" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="password" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="headImage" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<arg column="positionTypeId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<arg column="leavedate" jdbcType="DATE" javaType="java.util.Date" />
+			<arg column="groupId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<arg column="systemId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+		</constructor>
+	</resultMap>
+	<sql id="Base_Column_List">
+		staffId, staffName, staffNumber, loginNumber, idCar, email,
+		cardNumber,
+		dateOfEntry,
+		sex, staffPositionId, username, password,
+		headImage, remark,
+		positionTypeId, leavedate
+	</sql>
+	<select id="selectByPrimaryKey" resultType="com.lijwen.po.Staff"
+		parameterType="java.lang.Integer">
+		SELECT staff.*, staffPosition.departmentId as
+		'staffPosition.departmentid'
+		FROM staff INNER JOIN
+		staffPosition ON
+		staff.staffPositionId = staffPosition.staffPositionId
+		where staffId =
+		#{staffid,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from staff
+		where staffId = #{staffid,jdbcType=INTEGER}
+		;
+		delete from
+		staffclassperiodsigninrecord where staffClassesRecordId in(
+		select
+		staffClassesRecordId from staffclassesrecord where
+		staffId=#{staffid,jdbcType=INTEGER}
+		);
+		delete from
+		staffclassesrecord
+		where
+		staffId=#{staffid,jdbcType=INTEGER}
+		;
+	</delete>
+	<insert id="insert" parameterType="com.lijwen.po.Staff">
+		<selectKey resultType="java.lang.Integer" keyProperty="staffid"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into staff (staffName, staffNumber, loginNumber,
+		idCar, email,
+		cardNumber,
+		dateOfEntry, sex, staffPositionId,
+		username, password,
+		headImage,
+		remark, positionTypeId, leavedate,groupId,systemId
+		)
+		values
+		(#{staffname,jdbcType=VARCHAR}, #{staffnumber,jdbcType=VARCHAR},
+		#{loginnumber,jdbcType=VARCHAR},
+		#{idcar,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR}, #{cardnumber,jdbcType=VARCHAR},
+		#{dateofentry,jdbcType=DATE}, #{sex,jdbcType=BIT},
+		#{staffpositionid,jdbcType=INTEGER},
+		#{username,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR}, #{headimage,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR}, #{positiontypeid,jdbcType=INTEGER},
+		#{leavedate,jdbcType=DATE},22,#{systemid,jdbcType=INTEGER}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.lijwen.po.Staff">
+		<selectKey resultType="java.lang.Integer" keyProperty="staffid"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into staff
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="staffname != null">
+				staffName,
+			</if>
+			<if test="staffnumber != null">
+				staffNumber,
+			</if>
+			<if test="loginnumber != null">
+				loginNumber,
+			</if>
+			<if test="idcar != null">
+				idCar,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="cardnumber != null">
+				cardNumber,
+			</if>
+			<if test="dateofentry != null">
+				dateOfEntry,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="staffpositionid != null">
+				staffPositionId,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="headimage != null">
+				headImage,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="positiontypeid != null">
+				positionTypeId,
+			</if>
+			groupId,
+			systemId,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="staffname != null">
+				#{staffname,jdbcType=VARCHAR},
+			</if>
+			<if test="staffnumber != null">
+				#{staffnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="loginnumber != null">
+				#{loginnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="idcar != null">
+				#{idcar,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="cardnumber != null">
+				#{cardnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="dateofentry != null">
+				#{dateofentry,jdbcType=DATE},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=BIT},
+			</if>
+			<if test="staffpositionid != null">
+				#{staffpositionid,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="headimage != null">
+				#{headimage,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="positiontypeid != null">
+				#{positiontypeid,jdbcType=INTEGER},
+			</if>
+			<if test="groupid==null">
+				22,
+			</if>
+			<if test="groupid!= null">
+				#{groupid,jdbcType=INTEGER},
+			</if>
+			#{systemid,jdbcType=INTEGER},
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.lijwen.po.Staff">
+		update staff
+		<set>
+			<if test="staffname != null">
+				staffName = #{staffname,jdbcType=VARCHAR},
+			</if>
+			<if test="staffnumber != null">
+				staffNumber = #{staffnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="loginnumber != null">
+				loginNumber = #{loginnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="idcar != null">
+				idCar = #{idcar,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="cardnumber != null">
+				cardNumber = #{cardnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="dateofentry != null">
+				dateOfEntry = #{dateofentry,jdbcType=DATE},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType=BIT},
+			</if>
+			<if test="staffpositionid != null">
+				staffPositionId = #{staffpositionid,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="headimage != null">
+				headImage = #{headimage,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="positiontypeid != null">
+				positionTypeId = #{positiontypeid,jdbcType=INTEGER},
+			</if>
+			<if test="leavedate!= null and leavedate!=''">
+				leavedate = #{leavedate,jdbcType=DATE},
+			</if>
+			<if test="leavedate==''">
+				leavedate =null,
+			</if>
+			groupId=#{groupid,jdbcType=INTEGER},
+			systemId=#{systemid,jdbcType=INTEGER},
+		</set>
+		where staffId = #{staffid,jdbcType=INTEGER}
+		;
+		<if test="positiontypeid==2">
+			delete from staffclassesrecord where
+			staffId=#{staffid,jdbcType=INTEGER};
+		</if>
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.lijwen.po.Staff">
+		update staff
+		set
+		staffName = #{staffname,jdbcType=VARCHAR},
+		staffNumber =
+		#{staffnumber,jdbcType=VARCHAR},
+		loginNumber =
+		#{loginnumber,jdbcType=VARCHAR},
+		idCar = #{idcar,jdbcType=VARCHAR},
+		email = #{email,jdbcType=VARCHAR},
+		cardNumber =
+		#{cardnumber,jdbcType=VARCHAR},
+		dateOfEntry =
+		#{dateofentry,jdbcType=DATE},
+		sex = #{sex,jdbcType=BIT},
+		staffPositionId = #{staffpositionid,jdbcType=INTEGER},
+		username =
+		#{username,jdbcType=VARCHAR},
+		password = #{password,jdbcType=VARCHAR},
+		headImage = #{headimage,jdbcType=VARCHAR},
+		remark =
+		#{remark,jdbcType=VARCHAR},
+		positionTypeId =
+		#{positiontypeid,jdbcType=INTEGER},
+		leavedate =
+		#{leavedate,jdbcType=DATE},
+		groupId=#{groupid,jdbcType=INTEGER},
+		systemId=#{systemid,jdbcType=INTEGER}
+		where staffId =
+		#{staffid,jdbcType=INTEGER}
+	</update>
+
+	<!-- 另外新增的 -->
+	<select id="selectAll" resultType="com.lijwen.po.Staff">
+		SELECT staff.staffId, staff.staffName, staff.staffNumber,
+		staff.loginNumber, staff.idCar, staff.email, staff.cardNumber,
+		staff.dateOfEntry, staff.sex,
+		staff.staffPositionId, staff.username,
+		staff.password, staff.headImage,
+		staff.positionTypeId, staff.remark,
+		staff.leavedate,
+		staffPosition.departmentId AS
+		'staffPosition.departmentId',
+		staff.positionTypeId AS Expr1,
+		attributeGatherChild.Name AS 'positiontype.name', department.name AS
+		'staffPosition.department.name', staffPosition.positionid,
+		attributeGatherChild_1.Name AS 'staffPosition.position.name',
+		staff.groupId, attributeGatherChild_2.Name AS 'groupname.name',
+		staff.systemId,
+		system.systemName AS 'system.systemname'
+		FROM staff
+		INNER JOIN
+		staffPosition ON staff.staffPositionId =
+		staffPosition.staffPositionId INNER JOIN
+		department ON
+		staffPosition.departmentId = department.departmentId
+		INNER JOIN
+		attributeGatherChild ON staff.positionTypeId =
+		attributeGatherChild.attributeGatherChildId
+		INNER JOIN
+		attributeGatherChild AS attributeGatherChild_1 ON
+		staffPosition.positionid =
+		attributeGatherChild_1.attributeGatherChildId INNER JOIN
+		attributeGatherChild AS attributeGatherChild_2 ON staff.groupId =
+		attributeGatherChild_2.attributeGatherChildId INNER JOIN
+		system ON
+		staff.systemId = system.systemId
+		where 1=1
+		<if test="departmentids.length>0">
+			and staffPosition.departmentId in
+			<foreach collection="departmentids" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="positionid!=0">
+			and
+			staffPosition.positionid=#{positionid,jdbcType=INTEGER}
+		</if>
+		<if test="typeid!=0">
+			and staff.positionTypeId=#{typeid,jdbcType=INTEGER}
+		</if>
+		<if test="groupid!=0">
+			and staff.groupId=#{groupid,jdbcType=INTEGER}
+		</if>
+		<if test="number!=''">
+			and staff.staffNumber like
+			concat('%',#{number,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="name!=''">
+			and staff.staffName like
+			concat('%',#{name,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	<select id="selectStaff" resultType="com.lijwen.po.Staff">
+		SELECT staff.staffId, staff.staffName, staff.staffNumber, staff.sex,
+		staffPosition.departmentId AS 'staffPosition.departmentId',
+		department.name AS 'staffPosition.department.name',
+		staffPosition.positionid,
+		attributeGatherChild_1.Name AS
+		'staffPosition.position.name'
+		FROM staff INNER JOIN
+		staffPosition ON
+		staff.staffPositionId = staffPosition.staffPositionId INNER JOIN
+		department ON staffPosition.departmentId = department.departmentId
+		INNER JOIN
+		attributeGatherChild ON staff.positionTypeId =
+		attributeGatherChild.attributeGatherChildId
+		INNER JOIN
+		attributeGatherChild AS attributeGatherChild_1 ON
+		staffPosition.positionid =
+		attributeGatherChild_1.attributeGatherChildId
+		where
+		staff.positionTypeId=1
+		<if test="departmentId!=0">
+			and
+			staffPosition.departmentId=#{departmentId,jdbcType=INTEGER}
+		</if>
+		<if test="number!=''">
+			and staff.staffNumber like
+			concat('%',#{number,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="name!=''">
+			and staff.staffName like
+			concat('%',#{name,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	<!-- 新增时修改班组和删除大于今天的考勤安排 -->
+	<update id="updateStaffGroupId">
+		update staff
+		set groupId = #{groupid,jdbcType=INTEGER}
+		where staffId in
+		<foreach collection="staffids" item="item" open="(" separator=","
+			close=")">
+			#{item}
+		</foreach>
+		;
+		<!-- 删除新增到新增班组的员工的大于今天的班次安排的明细（签到记录表） -->
+		delete from staffclassperiodsigninrecord where staffClassesRecordId
+		in(
+		select staffClassesRecordId from staffclassesrecord where
+		staffId in
+		<foreach collection="staffids" item="item" open="(" separator=","
+			close=")">
+			#{item}
+		</foreach>
+		and
+		workDate>DATE(NOW())
+		)
+		;
+		<!-- 删除新增到新增班组的员工的大于今天的班次安排 -->
+		delete from staffclassesrecord where
+		staffId in
+		<foreach collection="staffids" item="item" open="(" separator=","
+			close=")">
+			#{item}
+		</foreach>
+		and workDate>DATE(NOW());
+
+	</update>
+	<!-- 根据班组id查询员工信息 -->
+	<select id="selectStaffByGroupId" resultType="com.lijwen.po.Staff">
+		SELECT
+		staff.staffId, staff.staffName, staff.staffNumber,
+		staff.sex,staff.groupId,
+		staffPosition.departmentId AS
+		'staffPosition.departmentId',
+		department.name AS
+		'staffPosition.department.name', staffPosition.positionid,
+		attributeGatherChild_1.Name AS 'staffPosition.position.name'
+		FROM staff
+		INNER JOIN
+		staffPosition ON staff.staffPositionId =
+		staffPosition.staffPositionId INNER JOIN
+		department ON
+		staffPosition.departmentId = department.departmentId
+		INNER JOIN
+		attributeGatherChild ON staff.positionTypeId =
+		attributeGatherChild.attributeGatherChildId
+		INNER JOIN
+		attributeGatherChild AS attributeGatherChild_1 ON
+		staffPosition.positionid =
+		attributeGatherChild_1.attributeGatherChildId
+		WHERE
+		staff.groupId=#{groupid,jdbcType=INTEGER} and staff.positionTypeId
+		in(1,3)
+	</select>
+	<!-- 编辑班组时修改班组和删除大于今天的考勤安排 -->
+	<update id="editByGroupidAndStaffids">
+		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_YGtable (
+		YuanGongId INT
+		);
+		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_BZYGtable (
+		BanZuYuanGongId
+		INT
+		);
+		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_XzScYgtable (
+		XzScYgId
+		INT
+		);
+		insert into tmp_BZYGtable select staffId from staff where
+		staff.groupId=#{groupid,jdbcType=INTEGER};
+		<if test="staffids.length>0">
+			insert into tmp_YGtable (YuanGongId) values
+			<foreach collection="staffids" item="item" separator=",">
+				(#{item,jdbcType=INTEGER})
+			</foreach>
+			;
+		</if>
+		<!-- 新增的员工id存放到临时表中 -->
+		insert into tmp_XzScYgtable (XzScYgId)
+		SELECT YuanGongId FROM
+		tmp_YGtable
+		WHERE NOT EXISTS (
+		SELECT * FROM
+		tmp_BZYGtable
+		WHERE
+		tmp_BZYGtable.BanZuYuanGongId
+		=tmp_YGtable.YuanGongId
+		);
+		<!--删除的员工id存放到临时表中 -->
+		insert into tmp_XzScYgtable (XzScYgId) SELECT BanZuYuanGongId FROM
+		tmp_BZYGtable
+		WHERE NOT EXISTS (
+		SELECT * FROM
+		tmp_YGtable
+		WHERE
+		tmp_YGtable.YuanGongId
+		= tmp_BZYGtable.BanZuYuanGongId
+		)
+		;
+		<!-- 删除被删除员工签到记录表中数据大于今天的记录 -->
+		delete from staffclassperiodsigninrecord where staffClassesRecordId
+		in(
+		select staffClassesRecordId from staffclassesrecord where
+		staffId in
+		(
+		select XzScYgId from tmp_XzScYgtable
+		)
+		and
+		workDate>DATE(NOW())
+		)
+		;
+		<!-- 删除被删除员工大于今天的考勤安排 -->
+		delete from staffclassesrecord where
+		staffId in (
+		select XzScYgId from
+		tmp_XzScYgtable
+		)
+		and workDate>DATE(NOW())
+		;
+
+		<!--将删除的员工的班组id改为默认班组 -->
+		UPDATE staff
+		SET groupId =22
+		WHERE staffId IN (
+		SELECT BanZuYuanGongId
+		FROM tmp_BZYGtable
+		WHERE
+		NOT EXISTS (
+		SELECT * FROM tmp_YGtable
+		WHERE
+		tmp_YGtable.YuanGongId=tmp_BZYGtable.BanZuYuanGongId)
+		)
+		;
+		<!--将新增的员工的班组id改为选择的班组 -->
+		update staff
+		set groupId =#{groupid,jdbcType=INTEGER}
+		where staffId in (
+		select YuanGongId from tmp_YGtable
+		where not EXISTS (
+		select * from
+		tmp_BZYGtable
+		where tmp_BZYGtable.BanZuYuanGongId
+		=tmp_YGtable.YuanGongId
+		and staff.groupId=#{groupid,jdbcType=INTEGER} )
+		)
+		;
+		DROP TABLE IF EXISTS tmp_YGtable;
+		DROP TABLE IF EXISTS tmp_BZYGtable;
+		DROP TABLE IF EXISTS tmp_XzScYgtable;
+	</update>
+	<!-- 班组id改变时删除大于今天的考勤记录 -->
+	<delete id="deleteRecordByStaffid" parameterType="java.lang.Integer">
+		delete from
+		staffclassperiodsigninrecord
+		where staffClassesRecordId in(
+		select
+		staffClassesRecordId from staffclassesrecord where
+		staffId=#{staffid,jdbcType=INTEGER}
+		and workDate>DATE(NOW())
+		)
+		;
+		delete
+		from staffclassesrecord
+		where staffId =
+		#{staffid,jdbcType=INTEGER}
+		and
+		workDate>DATE(NOW())
+		;
+	</delete>
+	<!-- 修改某个员工制度时改变班次安排大于今天的考勤制度 -->
+	<update id="updateStaffSystem">
+		update staffclassesrecord set
+		lateAndLeaveEarlySystemId=
+		(select max(lateAndLeaveEarlySystemId)
+		from
+		lateandleaveearlysystem
+		where systemId= #{systemid,jdbcType=INTEGER}
+		and deleteNo=0),
+		overtimeSystemId=(select max(overtimeSystemId)
+		from
+		overtimesystem
+		where systemId= #{systemid,jdbcType=INTEGER} and
+		deleteNo=0),
+		goOutSystemId= (select max(goOutSystemId)
+		from gooutsystem
+		where systemId= #{systemid,jdbcType=INTEGER} and deleteNo=0),
+		notClassesSystemId=(select max(notClassesSystemId)
+		from
+		notclassessystem
+		where systemId= #{systemid,jdbcType=INTEGER} and
+		deleteNo=0),
+		otherStystemId=(select max(otherStystemId)
+		from
+		otherstystem
+		where systemId= #{systemid,jdbcType=INTEGER} and
+		deleteNo=0)
+		where staffId=#{staffid,jdbcType=INTEGER}
+		and
+		workDate>DATE(NOW())
+	</update>
+    <!--   根据用户名密码查找用户 -->
+     <select id="selectUserByUserName" resultType="com.lijwen.po.Staff">
+		 SELECT 
+		 *
+	    FROM staff
+        WHERE staff.username=#{username} AND staff.password=#{password}
+        ;
+		 
+		 
+	</select>  
+</mapper>

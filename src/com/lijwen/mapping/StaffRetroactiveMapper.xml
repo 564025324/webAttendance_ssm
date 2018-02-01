@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lijwen.dao.StaffRetroactiveMapper" >
+  <resultMap id="BaseResultMap" type="com.lijwen.po.StaffRetroactive" >
+    <constructor >
+      <idArg column="staffRetroactiveId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="staffClassesChildRecordId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="SignInTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="toAndFrom" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="operationStaffId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="SignInWayId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="operatingTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="checkmanId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="checkTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="checkStateId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="applyForReason" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    staffRetroactiveId, staffClassesChildRecordId, SignInTime, toAndFrom, operationStaffId, 
+    SignInWayId, operatingTime, checkmanId, checkTime, checkStateId, applyForReason, 
+    remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from staffretroactive
+    where staffRetroactiveId = #{staffretroactiveid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from staffretroactive
+    where staffRetroactiveId = #{staffretroactiveid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lijwen.po.StaffRetroactive" >
+    <selectKey resultType="java.lang.Integer" keyProperty="staffretroactiveid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into staffretroactive (staffClassesChildRecordId, SignInTime, 
+      toAndFrom, operationStaffId, SignInWayId, 
+      operatingTime, checkmanId, checkTime, 
+      checkStateId, applyForReason, remark
+      )
+    values (#{staffclasseschildrecordid,jdbcType=INTEGER}, #{signintime,jdbcType=TIMESTAMP}, 
+      #{toandfrom,jdbcType=BIT}, #{operationstaffid,jdbcType=INTEGER}, #{signinwayid,jdbcType=INTEGER}, 
+      #{operatingtime,jdbcType=TIMESTAMP}, #{checkmanid,jdbcType=INTEGER}, #{checktime,jdbcType=TIMESTAMP}, 
+      #{checkstateid,jdbcType=INTEGER}, #{applyforreason,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lijwen.po.StaffRetroactive" >
+    <selectKey resultType="java.lang.Integer" keyProperty="staffretroactiveid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into staffretroactive
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="staffclasseschildrecordid != null" >
+        staffClassesChildRecordId,
+      </if>
+      <if test="signintime != null" >
+        SignInTime,
+      </if>
+      <if test="toandfrom != null" >
+        toAndFrom,
+      </if>
+      <if test="operationstaffid != null" >
+        operationStaffId,
+      </if>
+      <if test="signinwayid != null" >
+        SignInWayId,
+      </if>
+      <if test="operatingtime != null" >
+        operatingTime,
+      </if>
+      <if test="checkmanid != null" >
+        checkmanId,
+      </if>
+      <if test="checktime != null" >
+        checkTime,
+      </if>
+      <if test="checkstateid != null" >
+        checkStateId,
+      </if>
+      <if test="applyforreason != null" >
+        applyForReason,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="staffclasseschildrecordid != null" >
+        #{staffclasseschildrecordid,jdbcType=INTEGER},
+      </if>
+      <if test="signintime != null" >
+        #{signintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="toandfrom != null" >
+        #{toandfrom,jdbcType=BIT},
+      </if>
+      <if test="operationstaffid != null" >
+        #{operationstaffid,jdbcType=INTEGER},
+      </if>
+      <if test="signinwayid != null" >
+        #{signinwayid,jdbcType=INTEGER},
+      </if>
+      <if test="operatingtime != null" >
+        #{operatingtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkmanid != null" >
+        #{checkmanid,jdbcType=INTEGER},
+      </if>
+      <if test="checktime != null" >
+        #{checktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkstateid != null" >
+        33,
+      </if>
+      <if test="applyforreason != null" >
+        #{applyforreason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lijwen.po.StaffRetroactive" >
+    update staffretroactive
+    <set >
+      <if test="staffclasseschildrecordid != null" >
+        staffClassesChildRecordId = #{staffclasseschildrecordid,jdbcType=INTEGER},
+      </if>
+      <if test="signintime != null" >
+        SignInTime = #{signintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="toandfrom != null" >
+        toAndFrom = #{toandfrom,jdbcType=BIT},
+      </if>
+      <if test="operationstaffid != null" >
+        operationStaffId = #{operationstaffid,jdbcType=INTEGER},
+      </if>
+      <if test="signinwayid != null" >
+        SignInWayId = #{signinwayid,jdbcType=INTEGER},
+      </if>
+      <if test="operatingtime != null" >
+        operatingTime = #{operatingtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkmanid != null" >
+        checkmanId = #{checkmanid,jdbcType=INTEGER},
+      </if>
+      <if test="checktime != null" >
+        checkTime = #{checktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkstateid != null" >
+        checkStateId = #{checkstateid,jdbcType=INTEGER},
+      </if>
+      <if test="applyforreason != null" >
+        applyForReason = #{applyforreason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where staffRetroactiveId = #{staffretroactiveid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lijwen.po.StaffRetroactive" >
+    update staffretroactive
+    set staffClassesChildRecordId = #{staffclasseschildrecordid,jdbcType=INTEGER},
+      SignInTime = #{signintime,jdbcType=TIMESTAMP},
+      toAndFrom = #{toandfrom,jdbcType=BIT},
+      operationStaffId = #{operationstaffid,jdbcType=INTEGER},
+      SignInWayId = #{signinwayid,jdbcType=INTEGER},
+      operatingTime = #{operatingtime,jdbcType=TIMESTAMP},
+      checkmanId = #{checkmanid,jdbcType=INTEGER},
+      checkTime = #{checktime,jdbcType=TIMESTAMP},
+      checkStateId = #{checkstateid,jdbcType=INTEGER},
+      applyForReason = #{applyforreason,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where staffRetroactiveId = #{staffretroactiveid,jdbcType=INTEGER}
+  </update>
+  
+  
+<!--查询班段申请补签记录 -->
+  <select id="selectRecord" resultType="com.lijwen.po.StaffRetroactive" >
+      SELECT staffRetroactiveId, staffClassesChildRecordId,SUBSTRING(SignInTime,1,16) AS SignInTime, toAndFrom, operationStaffId, 
+    SignInWayId, operatingTime, checkmanId, checkTime, checkStateId, applyForReason, 
+    remark,attributegatherchild.Name AS 'checkstate'
+      FROM
+    webattendance.staffretroactive
+    INNER JOIN webattendance.attributegatherchild 
+        ON staffretroactive.checkStateId = attributegatherchild.attributeGatherChildId
+    where staffClassesChildRecordId = #{staffClassesChildRecordId,jdbcType=INTEGER}
+    and toAndFrom=#{toAndFrom,jdbcType=INTEGER} 
+      ORDER BY operatingTime DESC 
+    
+  </select>
+  
+  <!--多条件查询我的所有补签申请 -->
+  <select id="selectMyRetroactive" resultType="com.lijwen.po.StaffRetroactive" >
+      SELECT    staffRetroactive.checkStateId, attributeGatherChild.Name AS 'checkstate',SUBSTRING(staffRetroactive.SignInTime,1,16)AS 'SignInTime' , staffRetroactive.toAndFrom, 
+                 SUBSTRING(staffRetroactive.operatingTime,1,16)AS 'operatingTime', staff.staffName AS 'checkmanName', SUBSTRING(staffRetroactive.checkTime,1,16)AS 'checkTime', staffRetroactive.applyForReason, 
+                 staffRetroactive.remark,checkStateId
+      FROM       staffRetroactive LEFT OUTER JOIN
+                 staff ON staffRetroactive.checkmanId = staff.staffId LEFT OUTER JOIN
+                 attributeGatherChild ON staffRetroactive.checkStateId = attributeGatherChild.attributeGatherChildId
+	  where operationStaffId=#{staffid}
+		<if test="startDate !='' and endDate!=''">
+			and SignInTime between #{startDate}
+			and #{endDate}
+		</if>
+		<if test="checkTypeId!=0">
+			and checkStateId=#{checkTypeId}
+		</if>
+  </select>
+    <!--   查询异常信息进行处理 -->
+    
+    <select id="selectUnusual" resultType="com.lijwen.vo.Unusual" >
+      SELECT IF(goToWorkChargeNo=1,IF(SignInTime IS NULL,'缺签',SUBSTRING(SignInTime,1,16)),CONCAT(workDate,' ',goToWorkTime)
+               )AS 'signInTime', 
+               IF(timeFromWorkChargeNo=1,IF(signBackTime IS NULL,'缺签',SUBSTRING(signBackTime,1,16)),IF(timeFromWork>goToWorkTime, CONCAT(workDate,' ',timeFromWork),CONCAT(DATE_ADD(workDate,INTERVAL 1 DAY),' ',timeFromWork) )
+               )AS 'signBackTime',workDate,classesName, staff.staffName,attendanceClassChild_1.dealWithName,staffClassPeriodSignInRecordId
+                FROM       staffClassPeriodSignInRecord INNER JOIN
+                 staffClassesRecord ON staffClassPeriodSignInRecord.staffClassesRecordId = staffClassesRecord.staffClassesRecordId INNER JOIN
+                 attendanceClassChild ON 
+                 staffClassPeriodSignInRecord.attendanceClassChildId = attendanceClassChild.attendanceClassChildId INNER JOIN
+                 classPeriod ON staffClassPeriodSignInRecord.classPeriodId = classPeriod.classPeriodId INNER JOIN
+                 positionClasses ON classPeriod.positionClassesId = positionClasses.positionClassesId INNER JOIN
+                 attributeGatherChild ON positionClasses.classTypeId = attributeGatherChild.attributeGatherChildId INNER JOIN
+                 staff ON staffClassesRecord.staffId = staff.staffId INNER JOIN
+                 attendanceClassChild AS attendanceClassChild_1 ON 
+                 classPeriod.attendanceClassChildId = attendanceClassChild_1.attendanceClassChildId
+                 WHERE  attendanceClassChild.attendanceCTypeId IN(9,10)  AND workDate &lt;DATE_ADD(NOW(),INTERVAL -1 DAY)
+                 AND 
+                ((SignInTime IS NULL AND classTypeId=7 AND goToWorkChargeNo=1)
+                 OR
+                (signBackTime IS NULL AND classTypeId=7 AND timeFromWorkChargeNo=1) OR
+                (
+                 classTypeId=8 AND SignInTime IS NULL AND  signBackTime IS NOT NULL
+                )OR
+               ( classTypeId=8 AND signBackTime IS NULL AND  SignInTime IS NOT NULL
+                )
+                );
+    </select>
+     <!--   处理异常考勤时修改考勤类别 -->
+     <update id="updateAttendanceType" >
+     UPDATE staffclassperiodsigninrecord SET  attendanceClassChildId=#{attendanceClassChildId}
+      WHERE staffClassPeriodSignInRecordId= #{staffClassPeriodSignInRecordId}
+    </update>
+
+     <!--查询所有补签申请 -->
+   <select id="selectDealwihthRetroative" resultType="com.lijwen.vo.DealwihthRetroative" >
+    SELECT 
+ IF(goToWorkChargeNo=1,IF(staffClassPeriodSignInRecord.SignInTime IS NULL,'缺签',
+  SUBSTRING(SUBSTRING(staffClassPeriodSignInRecord.SignInTime,12,16),1,5) ),goToWorkTime
+               )AS 'signIn', 
+               IF(timeFromWorkChargeNo=1,IF(staffClassPeriodSignInRecord.signBackTime IS NULL,'缺签',SUBSTRING(SUBSTRING(staffClassPeriodSignInRecord.signBackTime,12,16),1,5)),
+              timeFromWork
+               )AS 'signBack',  
+                 staffRetroactive.toAndFrom,SUBSTRING(staffRetroactive.SignInTime,1,16) AS SignInTime, staffRetroactive.staffClassesChildRecordId, 
+                 staffRetroactive.staffRetroactiveId, staffRetroactive.operationStaffId, staff_1.staffName AS 'operationMan', 
+                 staff.staffName AS 'checkMan',CONCAT(workDate,' ',SUBSTRING(classPeriod.goToWorkTime,1,5)) AS goToWorkTime,
+                 IF(timeFromWork>goToWorkTime,CONCAT(workDate,' ',SUBSTRING(classPeriod.timeFromWork,1,5)),
+                 CONCAT(DATE_ADD(workDate,INTERVAL 1 DAY),' ',timeFromWork) )AS timeFromWork,SUBSTRING(classPeriod.timeFromWork,1,5)AS timeFromWork ,
+                 CONCAT(workDate,' ',startChargeTime)AS startChargeTime, 
+                 IF(timeFromWork>goToWorkTime,CONCAT(workDate,' ',endChargeTime),
+                 CONCAT(DATE_ADD(workDate,INTERVAL 1 DAY),' ',endChargeTime) )AS  endChargeTime, staffClassesRecord.workDate, lateandleaveearlysystem.LeaveEarlyAbsenteeismTime, 
+                 lateandleaveearlysystem.LeaveEarlyTime,
+                 lateandleaveearlysystem.lateAbsenteeismTime, lateandleaveearlysystem.lateTime, staffRetroactive.applyForReason, 
+                 staffRetroactive.remark,SUBSTRING(staffRetroactive.checkTime,1,16)AS checkTime ,SUBSTRING( staffRetroactive.operatingTime,1,16)AS  operatingTime, staffRetroactive.checkStateId, 
+                 attributeGatherChild.Name AS 'checkType',classPeriod.calculateLeftEarlyNo,classPeriod.calculateAbsenceNo
+     FROM       lateandleaveearlysystem RIGHT OUTER JOIN
+                 staffClassesRecord ON 
+                 lateandleaveearlysystem.lateAndLeaveEarlySystemId = staffClassesRecord.lateAndLeaveEarlySystemId RIGHT OUTER JOIN
+                 staffClassPeriodSignInRecord RIGHT OUTER JOIN
+                 staff AS staff_1 RIGHT OUTER JOIN
+                 staffRetroactive LEFT OUTER JOIN
+                 attributeGatherChild ON staffRetroactive.checkStateId = attributeGatherChild.attributeGatherChildId ON 
+                 staff_1.staffId = staffRetroactive.operationStaffId LEFT OUTER JOIN
+                 staff ON staffRetroactive.checkmanId = staff.staffId ON 
+                 staffClassPeriodSignInRecord.staffClassPeriodSignInRecordId = staffRetroactive.staffClassesChildRecordId ON 
+                 staffClassesRecord.staffClassesRecordId = staffClassPeriodSignInRecord.staffClassesRecordId LEFT OUTER JOIN
+                 classPeriod ON staffClassPeriodSignInRecord.classPeriodId = classPeriod.classPeriodId
+           <if test="checkStateId!=0">
+			 where staffRetroactive.checkStateId=#{checkStateId}
+		  </if>
+   
+    </select>
+ 
+
+
+
+</mapper>

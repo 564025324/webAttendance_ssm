@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lijwen.dao.StaffClassesRecordMapper">
+	<resultMap id="BaseResultMap" type="com.lijwen.po.StaffClassesRecord">
+		<constructor>
+			<idArg column="staffClassesRecordId" jdbcType="INTEGER"
+				javaType="java.lang.Integer" />
+			<arg column="workDate" jdbcType="DATE" javaType="java.util.Date" />
+			<arg column="staffId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+		</constructor>
+	</resultMap>
+	<sql id="Base_Column_List">
+		staffClassesRecordId, workDate, staffId
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from staffclassesrecord
+		where staffClassesRecordId =
+		#{staffclassesrecordid,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		staffclassesrecord
+		where staffClassesRecordId =
+		#{staffclassesrecordid,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.lijwen.po.StaffClassesRecord">
+		<selectKey resultType="java.lang.Integer" keyProperty="staffclassesrecordid"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into staffclassesrecord (workDate, staffId)
+		values
+		(#{workdate,jdbcType=DATE}, #{staffid,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.lijwen.po.StaffClassesRecord">
+		<selectKey resultType="java.lang.Integer" keyProperty="staffclassesrecordid"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into staffclassesrecord
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="workdate != null">
+				workDate,
+			</if>
+			<if test="staffid != null">
+				staffId,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="workdate != null">
+				#{workdate,jdbcType=DATE},
+			</if>
+			<if test="staffid != null">
+				#{staffid,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.lijwen.po.StaffClassesRecord">
+		update staffclassesrecord
+		<set>
+			<if test="workdate != null">
+				workDate = #{workdate,jdbcType=DATE},
+			</if>
+			<if test="staffid != null">
+				staffId = #{staffid,jdbcType=INTEGER},
+			</if>
+		</set>
+		where staffClassesRecordId = #{staffclassesrecordid,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.lijwen.po.StaffClassesRecord">
+		update
+		staffclassesrecord
+		set workDate = #{workdate,jdbcType=DATE},
+		staffId =
+		#{staffid,jdbcType=INTEGER}
+		where staffClassesRecordId =
+		#{staffclassesrecordid,jdbcType=INTEGER}
+	</update>
+
+
+	<select id="selectClassGroup" resultType="com.lijwen.vo.paibanchaxunVo">
+		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_table (
+		riqi DATE ,
+		renshu INT,
+		banzuId INT
+		)
+		;
+		CREATE TEMPORARY TABLE IF NOT EXISTS tmp_table1 (
+		riqi
+		DATE ,
+		renshu INT,
+		banzuId INT
+		);
+		INSERT INTO tmp_table
+		SELECT
+		staffClassesRecord.workDate AS riqi,COUNT(*)AS renshu,staff.groupId
+		AS
+		banzuId
+		FROM staff INNER JOIN
+		staffClassesRecord ON staff.staffId =
+		staffClassesRecord.staffId
+		WHERE workDate>=DATE(NOW())
+		GROUP BY
+		staff.groupId,staffClassesRecord.workDate
+		;
+		INSERT INTO tmp_table
+		SELECT
+		riqi, renshu,banzhuId FROM (
+		SELECT ADDDATE(workDate,1)AS
+		riqi,0 AS
+		renshu,staff.groupId AS banzhuId
+		FROM staff INNER JOIN
+		staffClassesRecord ON staff.staffId = staffClassesRecord.staffId
+		) AS
+		td
+		WHERE EXISTS(
+
+		SELECT staffClassesRecord.workDate, staff.groupId
+		FROM
+		staffClassesRecord INNER JOIN
+		staff ON staffClassesRecord.staffId =
+		staff.staffId WHERE
+		staff.groupId=td.banzhuId
+		)
+		AND riqi>=DATE(NOW())
+		GROUP BY banzhuId,renshu,riqi
+
+		<!-- INSERT INTO tmp_table SELECT MIN(riqi)AS riqi, renshu,banzhuId FROM 
+			( SELECT ADDDATE(workDate,1)AS riqi,0 AS renshu,staff.groupId AS banzhuId 
+			FROM staff INNER JOIN staffClassesRecord ON staff.staffId = staffClassesRecord.staffId 
+			) AS td WHERE EXISTS( SELECT staffClassesRecord.workDate, staff.groupId FROM 
+			staffClassesRecord INNER JOIN staff ON staffClassesRecord.staffId = staff.staffId 
+			WHERE staff.groupId=td.banzhuId ) AND riqi>=DATE(NOW()) GROUP BY banzhuId -->
+		<!-- SELECT ADDDATE(workDate,1)AS riqi,-1 AS renshu,staff.groupId AS banzhuId 
+			FROM staff INNER JOIN staffClassesRecord ON staff.staffId = staffClassesRecord.staffId 
+			WHERE ADDDATE(workDate,1) NOT IN ( SELECT workDate FROM staffclassesrecord 
+			)AND ADDDATE(workDate,1)>=DATE(NOW()) GROUP BY staff.groupId -->
+		;
+		INSERT INTO tmp_table1
+		SELECT riqi,renshu, banzuId FROM (
+		SELECT CASE
+		WHEN riqi=DATE(NOW()) THEN NULL ELSE DATE(NOW()) END AS riqi,
+		banzuId,CASE WHEN riqi=DATE(NOW()) THEN renshu ELSE 0 END AS renshu
+		FROM tmp_table
+		GROUP BY banzuId)AS mytable
+		WHERE mytable.riqi IS NOT
+		NULL
+		;
+		INSERT INTO tmp_table
+		SELECT * FROM tmp_table1
+		;
+		SELECT
+		attributeGatherChildId AS 'banzuid',banzhubiao.NAME AS
+		'banzu',banzhubiao.renshu AS 'renshu', (
+
+		SELECT MIN(tb.riqi)
+		FROM
+		(SELECT riqi,banzuId, SUM(renshu)AS renshu FROM
+		tmp_table GROUP BY
+		riqi, banzuId)AS tb WHERE
+		tb.banzuId=banzhubiao.attributeGatherChildId
+		AND
+		tb.renshu &lt;
+		banzhubiao.renshu
+		)AS 'paibanxinxi' FROM(
+		SELECT
+		NAME,
+		attributeGatherChildId,
+		attributeGatherId,(SELECT COUNT(*) FROM
+		staff
+		WHERE
+		staff.groupId= attributeGatherChild.attributeGatherChildId
+		AND
+		positionTypeId IN
+		(1,3)
+
+		)AS renshu
+		FROM attributeGatherChild
+		WHERE
+		attributeGatherId=7 AND
+		deleteNo=0
+
+		)AS banzhubiao
+		<!-- SELECT attributeGatherChildId AS 'banzuid',banzhubiao.NAME AS 'banzu',banzhubiao.renshu 
+			AS 'renshu', ( SELECT MIN(tmp_table.riqi) FROM tmp_table WHERE tmp_table.banzuId=banzhubiao.attributeGatherChildId 
+			AND tmp_table.renshu &lt; banzhubiao.renshu )AS 'paibanxinxi' FROM( SELECT 
+			NAME, attributeGatherChildId, attributeGatherId,(SELECT COUNT(*) FROM staff 
+			WHERE staff.groupId= attributeGatherChild.attributeGatherChildId AND positionTypeId 
+			IN (1,3))AS renshu FROM attributeGatherChild WHERE attributeGatherId=7 AND 
+			deleteNo=0)AS banzhubiao -->
+		;
+		DROP TABLE IF EXISTS tmp_table
+		;
+		DROP TABLE IF EXISTS tmp_table1
+		;
+	</select>
+	<select id="selectGroupRecord" resultType="com.lijwen.vo.YuanGongFenBanJiLu">
+		SELECT DISTINCT
+		positionClasses.positionClassesId as'classid',
+		staffClassesRecord.workDate as 'workdate', staffClassesRecord.staffId
+		as 'staffid',
+		positionClasses.classesName as
+		'classname',staffClassesRecord.staffClassesRecordId as
+		'classesrecordid'
+		FROM
+		staffClassesRecord INNER JOIN
+		staffClassPeriodSignInRecord ON
+		staffClassesRecord.staffClassesRecordId =
+		staffClassPeriodSignInRecord.staffClassesRecordId INNER JOIN
+		classPeriod ON staffClassPeriodSignInRecord.classPeriodId =
+		classPeriod.classPeriodId INNER JOIN
+		positionClasses ON
+		classPeriod.positionClassesId = positionClasses.positionClassesId
+		INNER JOIN
+		staff ON staffClassesRecord.staffId = staff.staffId
+		where
+		staff.positionTypeId in(1,3)
+		and
+		staff.groupId=#{goupid,jdbcType=INTEGER}
+		and
+		staffClassesRecord.workDate between #{bginDate,jdbcType=VARCHAR}
+		and
+		#{endDate,jdbcType=VARCHAR}
+	</select>
+
+	<update id="updatePaiBanXinXi">
+		<if test="deleteIds.length>0">
+			delete from staffclassperiodsigninrecord
+			where staffClassesRecordId
+			in(
+			<foreach collection="deleteIds" item="item" separator=",">
+				#{item}
+			</foreach>
+			)
+			;
+			DELETE FROM staffclassesrecord WHERE staffClassesRecordId
+			in(
+			<foreach collection="deleteIds" item="item" separator=",">
+				#{item}
+			</foreach>
+			)
+			;
+
+		</if>
+		<if test="listUpdate!=null">
+			CREATE TEMPORARY TABLE IF NOT EXISTS tmp_update (
+			riqi DATE,
+			yuangongid INT,
+			banci INT
+			);
+			INSERT INTO tmp_update
+			(riqi,yuangongid,banci) VALUES
+			<foreach collection="listUpdate" item="item" separator=",">
+				(#{item.workdate},#{item.staffid},#{item.classid})
+			</foreach>
+			;
+			delete from staffclassperiodsigninrecord
+			where staffClassesRecordId
+			in(SELECT staffClassesRecordId FROM
+			staffclassesrecord WHERE EXISTS(
+			SELECT * FROM tmp_update AS d WHERE
+			d.riqi=staffclassesrecord.workDate and
+			d.yuangongid=staffclassesrecord.staffId
+			));
+			insert into
+			staffclassperiodsigninrecord
+			(classPeriodId,staffClassesRecordId,attendanceClassChildId)
+			SELECT
+			classPeriod.classPeriodId,staffClassesRecord.staffClassesRecordId,classPeriod.attendanceClassChildId
+			FROM tmp_update INNER JOIN
+			classPeriod ON tmp_update.banci =
+			classPeriod.positionClassesId,
+			staffClassesRecord
+			where
+			staffClassesRecord.staffid=tmp_update.yuangongid and
+			staffClassesRecord.workDate=tmp_update.riqi and
+			classPeriod.deleteNo=0
+			;
+			DROP TABLE IF EXISTS tmp_update;
+		</if>
+		<if test="listInsert!=null">
+			CREATE TEMPORARY TABLE IF NOT EXISTS tmp_insert (
+			riqi DATE,
+			yuangongid INT,
+			banci INT,
+			banzuid INT
+			);
+			CREATE TEMPORARY TABLE IF NOT
+			EXISTS tmp_ZhiDuMx (
+			yuangongid INT,
+			zdzdId INT,
+			jbzdId INT,
+			wczdId INT,
+			wbczdId INT,
+			qtzdId INT
+			);
+			insert into
+			tmp_ZhiDuMx(yuangongid,zdzdId,jbzdId,wczdId,wbczdId,qtzdId)
+			select
+			staffId,(select max(lateAndLeaveEarlySystemId) from
+			lateandleaveearlysystem where systemId=staff.systemId and deleteNo=0)
+			as zdzdId,(select max(overtimeSystemId) from overtimesystem where
+			systemId=staff.systemId and deleteNo=0) as jbzdId,
+			(select
+			max(goOutSystemId) from gooutsystem where systemId=staff.systemId
+			and
+			deleteNo=0) as wczdId,
+			(select max(notClassesSystemId) from
+			notclassessystem where
+			systemId=staff.systemId and deleteNo=0) as
+			wbczdId,
+			(select max(otherStystemId) from otherstystem where
+			systemId=staff.systemId and deleteNo=0) as qtzdId
+			from staff
+			where
+			groupId=#{groupid,jdbcType=INTEGER};
+			
+			INSERT INTO tmp_insert
+			(riqi,yuangongid,banci,banzuid) VALUES
+			<foreach collection="listInsert" item="item" separator=",">
+				(#{item.workdate},#{item.staffid},#{item.classid},#{item.groupid})
+			</foreach>
+			;
+			insert into staffclassesrecord
+			(workDate,staffId,groupId,lateAndLeaveEarlySystemId,
+			overtimeSystemId,goOutSystemId,notClassesSystemId,otherStystemId)
+			select
+			riqi,tmp_ZhiDuMx.yuangongid,banzuid,zdzdId,jbzdId,wczdId,wbczdId,qtzdId
+			from tmp_insert inner join tmp_ZhiDuMx on
+			tmp_insert.yuangongid=tmp_ZhiDuMx.yuangongid;
+			insert into
+			staffclassperiodsigninrecord
+			(classPeriodId,staffClassesRecordId,attendanceClassChildId)
+			SELECT
+			classPeriod.classPeriodId,staffClassesRecord.staffClassesRecordId,classPeriod.attendanceClassChildId
+			FROM tmp_insert INNER JOIN
+			classPeriod ON tmp_insert.banci =
+			classPeriod.positionClassesId,
+			staffClassesRecord
+			where
+			staffClassesRecord.staffid=tmp_insert.yuangongid and
+			staffClassesRecord.workDate=tmp_insert.riqi and
+			classPeriod.deleteNo=0
+			;
+			DROP TABLE IF EXISTS tmp_ZhiDuMx;
+			DROP TABLE IF
+			EXISTS tmp_insert;
+		</if>
+
+	</update>
+
+
+</mapper>

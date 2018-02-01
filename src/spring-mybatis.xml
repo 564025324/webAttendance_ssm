@@ -68,14 +68,14 @@
         <!-- 实例化sqlSessionFactory时需要使用上述配置好的数据源以及SQL映射文件 -->
         <property name="dataSource" ref="dataSource" />
        	<!-- 自动扫描Mybatis的Mapper.xml文件 -->
-		<property name="mapperLocations" value="classpath:com/chenbingxian/mapping/*.xml" />
+		<property name="mapperLocations" value="classpath:com/lijwen/mapping/*.xml" />
 		 <property name="configLocation" value="classpath:mybatis.cofig.xml"/>
     </bean>
     
     <!-- 配置扫描器 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <!-- 扫描com.fangjian.dao这个包以及它的子包下的所有映射接口类 -->
-        <property name="basePackage" value="com.chenbingxian.dao" />
+        <property name="basePackage" value="com.lijwen.dao" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
     </bean>
 	
@@ -108,7 +108,7 @@
 		</tx:attributes>
 	</tx:advice>
 	<aop:config>
-		<aop:pointcut id="transactionPointcut" expression="execution(* com.chenbingxian.service..*Impl.*(..))" />
+		<aop:pointcut id="transactionPointcut" expression="execution(* com.lijwen.service..*Impl.*(..))" />
 		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" />
 	</aop:config>
 	<!-- 配置druid监控spring jdbc -->
@@ -116,7 +116,7 @@
 	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
 		<property name="patterns">
 			<list>
-				<value>com.chenbingxian.service.*</value>
+				<value>com.lijwen.service.*</value>
 			</list>
 		</property>
 	</bean>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lijwen.dao.GoOutSystemMapper" >
+  <resultMap id="BaseResultMap" type="com.lijwen.po.GoOutSystem" >
+    <constructor >
+      <idArg column="goOutSystemId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="goOutTime" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="goOutAbsenteeism" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="TimeNo" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="systemId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    goOutSystemId, goOutTime, goOutAbsenteeism, TimeNo, systemId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from gooutsystem
+    where goOutSystemId = #{gooutsystemid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from gooutsystem
+    where goOutSystemId = #{gooutsystemid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lijwen.po.GoOutSystem" >
+    <selectKey resultType="java.lang.Integer" keyProperty="gooutsystemid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into gooutsystem (goOutTime, goOutAbsenteeism, TimeNo, 
+      systemId,deleteNo)
+    values (#{goouttime,jdbcType=INTEGER}, #{gooutabsenteeism,jdbcType=INTEGER}, #{timeno,jdbcType=BIT}, 
+      #{systemid,jdbcType=INTEGER},0)
+  </insert>
+  <insert id="insertSelective" parameterType="com.lijwen.po.GoOutSystem" >
+    <selectKey resultType="java.lang.Integer" keyProperty="gooutsystemid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into gooutsystem
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="goouttime != null" >
+        goOutTime,
+      </if>
+      <if test="gooutabsenteeism != null" >
+        goOutAbsenteeism,
+      </if>
+      <if test="timeno != null" >
+        TimeNo,
+      </if>
+      <if test="systemId != null" >
+        systemId,
+      </if>
+        deleteNo,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="goouttime != null" >
+        #{goouttime,jdbcType=INTEGER},
+      </if>
+      <if test="gooutabsenteeism != null" >
+        #{gooutabsenteeism,jdbcType=INTEGER},
+      </if>
+      <if test="timeno != null" >
+        #{timeno,jdbcType=BIT},
+      </if>
+      <if test="systemId != null" >
+        #{systemid,jdbcType=INTEGER},
+      </if>
+      0,
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lijwen.po.GoOutSystem" >
+    update gooutsystem
+    <set >
+      <if test="goouttime != null" >
+        goOutTime = #{goouttime,jdbcType=INTEGER},
+      </if>
+      <if test="gooutabsenteeism != null" >
+        goOutAbsenteeism = #{gooutabsenteeism,jdbcType=INTEGER},
+      </if>
+      <if test="timeno != null" >
+        TimeNo = #{timeno,jdbcType=BIT},
+      </if>
+      <if test="systemid != null" >
+        systemId = #{systemid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where goOutSystemId = #{gooutsystemid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lijwen.po.GoOutSystem" >
+    update gooutsystem
+    set goOutTime = #{goouttime,jdbcType=INTEGER},
+      goOutAbsenteeism = #{gooutabsenteeism,jdbcType=INTEGER},
+      TimeNo = #{timeno,jdbcType=BIT},
+      systemId = #{systemid,jdbcType=INTEGER}
+    where goOutSystemId = #{gooutsystemid,jdbcType=INTEGER}
+  </update>
+    <update id="updateDeleteType" parameterType="java.lang.Integer">
+		UPDATE gooutsystem SET deleteNo=1
+		WHERE goOutSystemId=#{gooutsystemid,jdbcType=INTEGER}
+	</update>
+	<!-- 判断数据是否有变动 -->
+	<select id="PanDuanShuJuBianDong" resultType="com.lijwen.po.GoOutSystem"
+		parameterType="com.lijwen.po.GoOutSystem">
+	select *
+	  from gooutsystem 	  where 
+	  goOutTime = #{goouttime,jdbcType=INTEGER} and 
+      goOutAbsenteeism = #{gooutabsenteeism,jdbcType=INTEGER} and 
+      TimeNo = #{timeno,jdbcType=BIT} and 
+      systemId = #{systemid,jdbcType=INTEGER} and deleteNo=0;
+	</select>
+  <select id="selectBySystemid" resultType="com.lijwen.po.GoOutSystem" parameterType="java.lang.Integer" >
+    select *
+    from gooutsystem
+    where systemId= #{systemid,jdbcType=INTEGER} and deleteNo=0
+  </select>
+      <delete id="deleteBySystemid" parameterType="java.lang.Integer" >
+   update gooutsystem set deleteNo=1 
+    where systemId= #{systemid,jdbcType=INTEGER}
+  </delete>
+  	<!-- 外出考勤制度更改大于今天的分班记录的制度也要修改 -->
+  <update  id="updateRecordBySystemMxId" >
+  update staffclassesrecord set goOutSystemId=#{nowGoOutSystemId,jdbcType=INTEGER}
+  where workDate>DATE(NOW()) and goOutSystemId=#{beforeGoOutSystemId,jdbcType=INTEGER}
+  </update>
+</mapper>

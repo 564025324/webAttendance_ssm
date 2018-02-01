@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lijwen.dao.OtherStystemMapper" >
+  <resultMap id="BaseResultMap" type="com.lijwen.po.OtherStystem" >
+    <constructor >
+      <idArg column="otherStystemId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="timeToOne" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="goOutAttendanceNo" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="systemId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    otherStystemId, timeToOne, goOutAttendanceNo, systemId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from otherstystem
+    where otherStystemId = #{otherstystemid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from otherstystem
+    where otherStystemId = #{otherstystemid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lijwen.po.OtherStystem" >
+    <selectKey resultType="java.lang.Integer" keyProperty="otherstystemid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into otherstystem (timeToOne, goOutAttendanceNo, systemId,deleteNo
+      )
+    values (#{timetoone,jdbcType=INTEGER}, #{gooutattendanceno,jdbcType=BIT}, #{systemid,jdbcType=INTEGER}
+      ,0)
+  </insert>
+  <insert id="insertSelective" parameterType="com.lijwen.po.OtherStystem" >
+    <selectKey resultType="java.lang.Integer" keyProperty="otherstystemid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into otherstystem
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="timetoone != null" >
+        timeToOne,
+      </if>
+      <if test="gooutattendanceno != null" >
+        goOutAttendanceNo,
+      </if>
+      <if test="systemId != null" >
+        systemId,
+      </if>
+        deleteNo,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="timetoone != null" >
+        #{timetoone,jdbcType=INTEGER},
+      </if>
+      <if test="gooutattendanceno != null" >
+        #{gooutattendanceno,jdbcType=BIT},
+      </if>
+      <if test="systemId != null" >
+        #{systemid,jdbcType=INTEGER},
+      </if>
+      0,
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lijwen.po.OtherStystem" >
+    update otherstystem
+    <set >
+      <if test="timetoone != null" >
+        timeToOne = #{timetoone,jdbcType=INTEGER},
+      </if>
+      <if test="gooutattendanceno != null" >
+        goOutAttendanceNo = #{gooutattendanceno,jdbcType=BIT},
+      </if>
+      <if test="systemid != null" >
+        systemId = #{systemid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where otherStystemId = #{otherstystemid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lijwen.po.OtherStystem" >
+    update otherstystem
+    set timeToOne = #{timetoone,jdbcType=INTEGER},
+      goOutAttendanceNo = #{gooutattendanceno,jdbcType=BIT},
+      systemId = #{systemid,jdbcType=INTEGER}
+    where otherStystemId = #{otherstystemid,jdbcType=INTEGER}
+  </update>
+        <update id="updateDeleteType" parameterType="java.lang.Integer">
+		UPDATE otherstystem SET deleteNo=1
+		WHERE otherStystemId=#{otherstystemid,jdbcType=INTEGER}
+	</update>
+	<!-- 判断数据是否有变动 -->
+	<select id="PanDuanShuJuBianDong" resultType="com.lijwen.po.OtherStystem"
+		parameterType="com.lijwen.po.OtherStystem">
+	select *
+	  from otherstystem 	  where  
+	 timeToOne = #{timetoone,jdbcType=INTEGER} and 
+      goOutAttendanceNo = #{gooutattendanceno,jdbcType=BIT} and 
+      systemId = #{systemid,jdbcType=INTEGER} and deleteNo=0;
+	</select>
+   <select id="SelectBySystemid" resultType="com.lijwen.po.OtherStystem" parameterType="java.lang.Integer" >
+    select *
+    from otherstystem
+   where systemId= #{systemid,jdbcType=INTEGER} and deleteNo=0
+  </select>
+    <delete id="deleteBySystemid" parameterType="java.lang.Integer" >
+    update otherstystem set  deleteNO=1
+    where systemId= #{systemid,jdbcType=INTEGER}
+  </delete>
+  	<!-- 其他考勤制度更改大于今天的分班记录的制度也要修改 -->
+  <update  id="updateRecordBySystemMxId" >
+  update staffclassesrecord set otherStystemId=#{nowOtherStystemId,jdbcType=INTEGER}
+  where workDate>DATE(NOW()) and otherStystemId=#{beforeOtherStystemId,jdbcType=INTEGER}
+  </update>
+</mapper>
